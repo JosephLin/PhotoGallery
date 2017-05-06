@@ -14,8 +14,6 @@ class ImageCell: UICollectionViewCell {
 
 class GridViewController: UICollectionViewController {
 
-    let animationController = AnimationController()
-
     // MARK: -
 
     private struct Layout {
@@ -89,43 +87,6 @@ class GridViewController: UICollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let image = DataSource.image(at: indexPath.item)
         let controller = DetailViewController.controller(with: image)
-        controller.transitioningDelegate = self
         present(controller, animated: true, completion: nil)
     }
 }
-
-extension GridViewController: UIViewControllerTransitioningDelegate {
-    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        self.animationController.originFrame = CGRect.zero
-        return self.animationController
-    }
-
-    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        self.animationController.originFrame = CGRect.zero
-        return self.animationController
-    }
-
-}
-
-class DetailViewController: UIViewController {
-    @IBOutlet weak var imageView: UIImageView!
-    var image: UIImage!
-
-    static func controller(with image: UIImage) -> DetailViewController {
-        let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DetailViewController") as! DetailViewController
-        controller.image = image
-        return controller
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        imageView.image = image
-    }
-
-    @IBAction func closeButtonTapped(_ sender: Any) {
-        dismiss(animated: true, completion: nil)
-    }
-}
-
-

@@ -8,6 +8,23 @@
 
 import UIKit
 
+class TransitionController: NSObject, UIViewControllerTransitioningDelegate {
+    let animationController = AnimationController()
+
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        self.animationController.originFrame = CGRect.zero
+        return self.animationController
+    }
+
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        self.animationController.originFrame = CGRect.zero
+        return self.animationController
+    }
+
+}
+
+
+
 class AnimationController: NSObject, UIViewControllerAnimatedTransitioning {
 
     var originFrame = CGRect.zero
