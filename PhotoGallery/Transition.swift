@@ -73,23 +73,44 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
         }
 
         let duration = transitionDuration(using: transitionContext)
-        let initialFrame = source.frame
-        let finalFrame = frame(for: source.image.size, centeredIn: transitionContext.finalFrame(for: toViewController))
+        let initialImageFrame = source.frame
+        let finalFrame = transitionContext.finalFrame(for: toViewController)
+        let finalImageFrame = frame(for: source.image.size, centeredIn: finalFrame)
 
         let imageView = UIImageView(image: source.image)
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
 
+        let blackBackground = UIView()
+        blackBackground.backgroundColor = .black
+        blackBackground.frame = finalFrame
+        blackBackground.alpha = 0.0
+
+        let cover = UIView()
+        cover.backgroundColor = .white
+        cover.frame = initialImageFrame
+
         switch direction {
         case .presenting:
+            transitionContext.containerView.addSubview(cover)
+            transitionContext.containerView.addSubview(blackBackground)
             transitionContext.containerView.addSubview(imageView)
-            imageView.frame = source.frame
-            UIView.animate(withDuration: duration, animations: {
-                imageView.frame = finalFrame
-            }, completion: { (_) in
-                transitionContext.containerView.addSubview(toView)
-                imageView.removeFromSuperview()
-                transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+            imageView.frame = initialImageFrame
+            UIView.animate(
+                withDuration: duration,
+                delay: 0.0,
+                usingSpringWithDamping: 0.9,
+                initialSpringVelocity: 0.0,
+                options: [.curveEaseInOut],
+                animations: {
+                    blackBackground.alpha = 1.0
+                    imageView.frame = finalImageFrame
+            },
+                completion: { (_) in
+                    transitionContext.containerView.addSubview(toView)
+                    imageView.removeFromSuperview()
+                    transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+
             })
         case .dismissing:
             transitionContext.containerView.insertSubview(toView, belowSubview: fromView)
