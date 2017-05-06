@@ -58,6 +58,9 @@ class GridViewController: UICollectionViewController {
         }
     }
 
+    // MARK: -
+
+    let transitionController = TransitionController()
 
     // MARK: -
 
@@ -85,8 +88,12 @@ class GridViewController: UICollectionViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let frame = collectionView.layoutAttributesForItem(at: indexPath)!.frame
+        let convertedFrame = collectionView.convert(frame, to: collectionView.window)
         let image = DataSource.image(at: indexPath.item)
+        transitionController.source = (frame: convertedFrame, image: image)
         let controller = DetailViewController.controller(with: image)
+        controller.transitioningDelegate = transitionController
         present(controller, animated: true, completion: nil)
     }
 }

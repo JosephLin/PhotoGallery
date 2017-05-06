@@ -12,13 +12,6 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var imageView: UIImageView!
     var image: UIImage!
 
-    let transitionController = TransitionController()
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        transitioningDelegate = transitionController
-    }
-
     static func controller(with image: UIImage) -> DetailViewController {
         let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DetailViewController") as! DetailViewController
         controller.image = image
