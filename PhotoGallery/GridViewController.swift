@@ -57,10 +57,6 @@ class GridViewController: UICollectionViewController {
         }
     }
 
-    // MARK: - Properties
-
-    let transitionController = TransitionController()
-
     // MARK: -
 
     override func viewDidLayoutSubviews() {
@@ -85,9 +81,9 @@ class GridViewController: UICollectionViewController {
         let frame = collectionView.layoutAttributesForItem(at: indexPath)!.frame
         let convertedFrame = collectionView.convert(frame, to: collectionView.window)
         let image = DataSource.image(at: indexPath.item)
-        transitionController.source = (frame: convertedFrame, image: image)
+
         let controller = DetailViewController.controller(with: image)
-        controller.transitioningDelegate = transitionController
+        controller.transitionController.source = (frame: convertedFrame, image: image)
         present(controller, animated: true, completion: nil)
     }
 }

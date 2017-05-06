@@ -12,10 +12,8 @@
         <!--Navigation Controller-->
         <scene sceneID="Rra-jj-2zV">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="3Pf-eb-wVE" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController id="GwD-K8-W2U" sceneMemberID="viewController">
-                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="R4Z-DV-CRJ">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="R4Z-DV-CRJ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <textAttributes key="titleTextAttributes">
@@ -26,6 +24,7 @@
                         <segue destination="5l2-gZ-FRZ" kind="relationship" relationship="rootViewController" id="d8T-b8-auD"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3Pf-eb-wVE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-353" y="-140"/>
         </scene>
@@ -65,44 +64,6 @@
                                 <connections>
                                     <outlet property="imageView" destination="ao4-B4-I64" id="yNu-J7-vK6"/>
                                 </connections>
-                            </collectionViewCell>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="Wbn-ye-TeZ">
-                                <rect key="frame" x="192" y="16" width="167" height="125"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="167" height="125"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="DSC09249" translatesAutoresizingMaskIntoConstraints="NO" id="SeQ-5k-Dn2">
-                                            <rect key="frame" x="0.0" y="0.0" width="167" height="125"/>
-                                        </imageView>
-                                    </subviews>
-                                </view>
-                                <constraints>
-                                    <constraint firstItem="SeQ-5k-Dn2" firstAttribute="top" secondItem="Wbn-ye-TeZ" secondAttribute="top" id="LGQ-Gr-EcJ"/>
-                                    <constraint firstItem="SeQ-5k-Dn2" firstAttribute="leading" secondItem="Wbn-ye-TeZ" secondAttribute="leading" id="QnK-3P-xpL"/>
-                                    <constraint firstAttribute="bottom" secondItem="SeQ-5k-Dn2" secondAttribute="bottom" id="VLC-lE-Awo"/>
-                                    <constraint firstAttribute="trailing" secondItem="SeQ-5k-Dn2" secondAttribute="trailing" id="uOY-3g-eZ2"/>
-                                </constraints>
-                            </collectionViewCell>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="nDl-5H-QWW">
-                                <rect key="frame" x="16" y="149" width="167" height="125"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="167" height="125"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="DSC09737" translatesAutoresizingMaskIntoConstraints="NO" id="mX6-Kv-bOZ">
-                                            <rect key="frame" x="0.0" y="0.0" width="167" height="125"/>
-                                        </imageView>
-                                    </subviews>
-                                </view>
-                                <constraints>
-                                    <constraint firstItem="mX6-Kv-bOZ" firstAttribute="leading" secondItem="nDl-5H-QWW" secondAttribute="leading" id="26X-O4-aH9"/>
-                                    <constraint firstItem="mX6-Kv-bOZ" firstAttribute="top" secondItem="nDl-5H-QWW" secondAttribute="top" id="79X-YA-RUO"/>
-                                    <constraint firstAttribute="trailing" secondItem="mX6-Kv-bOZ" secondAttribute="trailing" id="aPC-56-vLL"/>
-                                    <constraint firstAttribute="bottom" secondItem="mX6-Kv-bOZ" secondAttribute="bottom" id="kos-mM-0Dq"/>
-                                </constraints>
                             </collectionViewCell>
                         </cells>
                         <connections>
@@ -189,8 +150,6 @@
     </scenes>
     <resources>
         <image name="DSC09241" width="4000" height="6000"/>
-        <image name="DSC09249" width="6000" height="4000"/>
-        <image name="DSC09737" width="6000" height="4000"/>
         <image name="ic_add" width="15" height="15"/>
         <image name="ic_close" width="14" height="14"/>
         <image name="ic_comment" width="20" height="20"/>

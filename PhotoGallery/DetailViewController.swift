@@ -11,16 +11,23 @@ import UIKit
 class DetailViewController: UIViewController {
     @IBOutlet weak var imageView: UIImageView!
     var image: UIImage!
+    let transitionController = TransitionController()
+
+    // MARK: -
 
     static func controller(with image: UIImage) -> DetailViewController {
         let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DetailViewController") as! DetailViewController
         controller.image = image
+        controller.transitioningDelegate = controller.transitionController
         return controller
     }
+
+    // MARK: -
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        transitionController.addPanRecognizer(to: view)
         imageView.image = image
     }
 
