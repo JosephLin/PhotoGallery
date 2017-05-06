@@ -14,18 +14,23 @@ class ImageCell: UICollectionViewCell {
 
 class GridViewController: UICollectionViewController {
 
+    let animationController = AnimationController()
+
     // MARK: -
 
     private struct Layout {
         private static let numberOfColumns = 2
-        private static let sectionInset: CGFloat = 30
-        private static let itemSpacing: CGFloat = 15
+        private static let sectionInset: CGFloat = 18
+        private static let itemSpacing: CGFloat = 10
         private static let aspectRatio: CGFloat = 4.0 / 3.0
 
-        static func itemSize(fromViewWidth viewWidth: CGFloat) -> CGSize {
-            let width = (viewWidth - (2 * sectionInset) - (CGFloat(numberOfColumns - 1) * itemSpacing)) / CGFloat(numberOfColumns)
+        static func updateLayout(_ layout: UICollectionViewFlowLayout, forViewWidth viewWidth: CGFloat) {
+            layout.sectionInset = UIEdgeInsets(top: sectionInset, left: sectionInset, bottom: sectionInset, right: sectionInset)
+            layout.minimumInteritemSpacing = itemSpacing
+            layout.minimumLineSpacing = itemSpacing
+            let width = floor((viewWidth - (2 * sectionInset) - (CGFloat(numberOfColumns - 1) * itemSpacing)) / CGFloat(numberOfColumns))
             let height = width / aspectRatio
-            return CGSize(width: width, height: height)
+            layout.itemSize = CGSize(width: width, height: height)
         }
     }
 
@@ -68,8 +73,7 @@ class GridViewController: UICollectionViewController {
         guard let collectionView = collectionView, let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else {
             return
         }
-
-        layout.itemSize = Layout.itemSize(fromViewWidth: collectionView.frame.size.width)
+        Layout.updateLayout(layout, forViewWidth: collectionView.frame.size.width)
     }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -85,8 +89,22 @@ class GridViewController: UICollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let image = DataSource.image(at: indexPath.item)
         let controller = DetailViewController.controller(with: image)
-        navigationController?.pushViewController(controller, animated: true)
+        controller.transitioningDelegate = self
+        present(controller, animated: true, completion: nil)
     }
+}
+
+extension GridViewController: UIViewControllerTransitioningDelegate {
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        self.animationController.originFrame = CGRect.zero
+        return self.animationController
+    }
+
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        self.animationController.originFrame = CGRect.zero
+        return self.animationController
+    }
+
 }
 
 class DetailViewController: UIViewController {
@@ -103,6 +121,10 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
 
         imageView.image = image
+    }
+
+    @IBAction func closeButtonTapped(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
     }
 }
 

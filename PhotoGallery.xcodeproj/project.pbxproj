@@ -12,6 +12,7 @@
 		7C300F8C1EBAD63600716547 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C300F8A1EBAD63600716547 /* Main.storyboard */; };
 		7C300F8E1EBAD63600716547 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C300F8D1EBAD63600716547 /* Assets.xcassets */; };
 		7C300F911EBAD63600716547 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C300F8F1EBAD63600716547 /* LaunchScreen.storyboard */; };
+		7C4ADC4E1EBD5316002C4FFA /* Transition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4ADC4D1EBD5316002C4FFA /* Transition.swift */; };
 		7CC0DBA21EBADF0200AA7F19 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 7CC0DBA11EBADF0200AA7F19 /* README.md */; };
 /* End PBXBuildFile section */
 
@@ -23,6 +24,7 @@
 		7C300F8D1EBAD63600716547 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7C300F901EBAD63600716547 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7C300F921EBAD63600716547 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7C4ADC4D1EBD5316002C4FFA /* Transition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transition.swift; sourceTree = "<group>"; };
 		7CC0DBA11EBADF0200AA7F19 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -59,6 +61,7 @@
 			children = (
 				7C300F861EBAD63600716547 /* AppDelegate.swift */,
 				7C300F881EBAD63600716547 /* ViewController.swift */,
+				7C4ADC4D1EBD5316002C4FFA /* Transition.swift */,
 				7C300F8A1EBAD63600716547 /* Main.storyboard */,
 				7C300F8D1EBAD63600716547 /* Assets.xcassets */,
 				7C300F8F1EBAD63600716547 /* LaunchScreen.storyboard */,
@@ -141,6 +144,7 @@
 			files = (
 				7CC0DBA21EBADF0200AA7F19 /* README.md in Sources */,
 				7C300F891EBAD63600716547 /* ViewController.swift in Sources */,
+				7C4ADC4E1EBD5316002C4FFA /* Transition.swift in Sources */,
 				7C300F871EBAD63600716547 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

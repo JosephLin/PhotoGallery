@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F67a" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="GwD-K8-W2U">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F71b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="GwD-K8-W2U">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -12,43 +12,47 @@
         <!--Navigation Controller-->
         <scene sceneID="Rra-jj-2zV">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3Pf-eb-wVE" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController id="GwD-K8-W2U" sceneMemberID="viewController">
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="R4Z-DV-CRJ">
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="R4Z-DV-CRJ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <textAttributes key="titleTextAttributes">
+                            <color key="textColor" red="0.29019607843137252" green="0.29019607843137252" blue="0.29019607843137252" alpha="1" colorSpace="calibratedRGB"/>
+                        </textAttributes>
                     </navigationBar>
                     <connections>
                         <segue destination="5l2-gZ-FRZ" kind="relationship" relationship="rootViewController" id="d8T-b8-auD"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="3Pf-eb-wVE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-353" y="-140"/>
         </scene>
-        <!--Grid View Controller-->
+        <!--Image gallery-->
         <scene sceneID="Oe2-Im-Q1b">
             <objects>
-                <collectionViewController id="5l2-gZ-FRZ" customClass="GridViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="xKY-5L-vYH">
+                <collectionViewController id="5l2-gZ-FRZ" customClass="GridViewController" customModule="PhotoGallery" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="xKY-5L-vYH">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="15" minimumInteritemSpacing="15" id="Qr9-MB-jdb">
-                            <size key="itemSize" width="150" height="112.5"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="8" minimumInteritemSpacing="8" id="Qr9-MB-jdb">
+                            <size key="itemSize" width="167" height="125"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                            <inset key="sectionInset" minX="30" minY="30" maxX="30" maxY="30"/>
+                            <inset key="sectionInset" minX="16" minY="16" maxX="16" maxY="16"/>
                         </collectionViewFlowLayout>
                         <cells>
-                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ImageCell" id="NF7-tz-YWJ" customClass="ImageCell" customModule="Gallery" customModuleProvider="target">
-                                <rect key="frame" x="30" y="30" width="150" height="112.5"/>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ImageCell" id="NF7-tz-YWJ" customClass="ImageCell" customModule="PhotoGallery" customModuleProvider="target">
+                                <rect key="frame" x="16" y="16" width="167" height="125"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="150" height="112.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="167" height="125"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="DSC09241" translatesAutoresizingMaskIntoConstraints="NO" id="ao4-B4-I64">
-                                            <rect key="frame" x="0.0" y="0.0" width="150" height="112.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="167" height="125"/>
                                         </imageView>
                                     </subviews>
                                 </view>
@@ -63,14 +67,14 @@
                                 </connections>
                             </collectionViewCell>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="Wbn-ye-TeZ">
-                                <rect key="frame" x="195" y="30" width="150" height="112.5"/>
+                                <rect key="frame" x="192" y="16" width="167" height="125"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="150" height="112.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="167" height="125"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="DSC09249" translatesAutoresizingMaskIntoConstraints="NO" id="SeQ-5k-Dn2">
-                                            <rect key="frame" x="0.0" y="0.0" width="150" height="112.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="167" height="125"/>
                                         </imageView>
                                     </subviews>
                                 </view>
@@ -82,14 +86,14 @@
                                 </constraints>
                             </collectionViewCell>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="nDl-5H-QWW">
-                                <rect key="frame" x="30" y="157.5" width="150" height="112.5"/>
+                                <rect key="frame" x="16" y="149" width="167" height="125"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="150" height="112.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="167" height="125"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="DSC09737" translatesAutoresizingMaskIntoConstraints="NO" id="mX6-Kv-bOZ">
-                                            <rect key="frame" x="0.0" y="0.0" width="150" height="112.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="167" height="125"/>
                                         </imageView>
                                     </subviews>
                                 </view>
@@ -106,9 +110,9 @@
                             <outlet property="delegate" destination="5l2-gZ-FRZ" id="KWS-YR-xzO"/>
                         </connections>
                     </collectionView>
-                    <navigationItem key="navigationItem" id="iX5-BD-sdZ"/>
+                    <navigationItem key="navigationItem" title="Image gallery" id="iX5-BD-sdZ"/>
                     <connections>
-                        <segue destination="doB-IN-1Ge" kind="show" identifier="placeholder" id="O10-5x-CMs"/>
+                        <segue destination="doB-IN-1Ge" kind="presentation" identifier="placeholder" id="O10-5x-CMs"/>
                     </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="e4W-0U-6qL" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -118,7 +122,7 @@
         <!--Detail View Controller-->
         <scene sceneID="uVS-OK-G5e">
             <objects>
-                <viewController storyboardIdentifier="DetailViewController" id="doB-IN-1Ge" customClass="DetailViewController" customModule="Gallery" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DetailViewController" id="doB-IN-1Ge" customClass="DetailViewController" customModule="PhotoGallery" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="rjL-83-6EE"/>
                         <viewControllerLayoutGuide type="bottom" id="f2c-dJ-NCQ"/>
@@ -130,13 +134,48 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="g0T-iI-56C">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
+                            <navigationBar contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="Zef-4y-duD">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="64"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="64" id="Pxr-86-mKK"/>
+                                </constraints>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <items>
+                                    <navigationItem title="Image" id="M3N-ks-uot">
+                                        <barButtonItem key="rightBarButtonItem" image="ic_close" id="Whv-GH-7bU">
+                                            <connections>
+                                                <action selector="closeButtonTapped:" destination="doB-IN-1Ge" id="U5z-0n-IoH"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="QWT-h2-GbP">
+                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <items>
+                                    <barButtonItem image="ic_plus1" id="AoV-4G-MJa"/>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="A2H-vI-o5v"/>
+                                    <barButtonItem image="ic_comment" id="fSS-rU-rt0"/>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="vAT-XP-FCp"/>
+                                    <barButtonItem image="ic_add" id="tVI-l1-JL2"/>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="OYc-Eh-jfb"/>
+                                    <barButtonItem image="ic_share" id="Q58-14-Jt3"/>
+                                </items>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </toolbar>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="Zef-4y-duD" firstAttribute="leading" secondItem="h7Y-US-Oji" secondAttribute="leading" id="71l-3P-1qG"/>
                             <constraint firstAttribute="trailing" secondItem="g0T-iI-56C" secondAttribute="trailing" id="PyA-rQ-grO"/>
+                            <constraint firstItem="QWT-h2-GbP" firstAttribute="leading" secondItem="h7Y-US-Oji" secondAttribute="leading" id="cG7-iZ-bTK"/>
                             <constraint firstItem="g0T-iI-56C" firstAttribute="top" secondItem="h7Y-US-Oji" secondAttribute="top" id="fNc-mh-xgy"/>
+                            <constraint firstItem="f2c-dJ-NCQ" firstAttribute="top" secondItem="QWT-h2-GbP" secondAttribute="bottom" id="fpc-j8-OEX"/>
+                            <constraint firstItem="Zef-4y-duD" firstAttribute="top" secondItem="h7Y-US-Oji" secondAttribute="top" id="gN5-jW-oBt"/>
                             <constraint firstItem="f2c-dJ-NCQ" firstAttribute="top" secondItem="g0T-iI-56C" secondAttribute="bottom" id="qJa-72-WXi"/>
                             <constraint firstItem="g0T-iI-56C" firstAttribute="leading" secondItem="h7Y-US-Oji" secondAttribute="leading" id="rnf-Pe-x1R"/>
+                            <constraint firstAttribute="trailing" secondItem="Zef-4y-duD" secondAttribute="trailing" id="z76-Te-kDf"/>
+                            <constraint firstAttribute="trailing" secondItem="QWT-h2-GbP" secondAttribute="trailing" id="zaF-4L-z9y"/>
                         </constraints>
                     </view>
                     <connections>
@@ -152,5 +191,10 @@
         <image name="DSC09241" width="4000" height="6000"/>
         <image name="DSC09249" width="6000" height="4000"/>
         <image name="DSC09737" width="6000" height="4000"/>
+        <image name="ic_add" width="15" height="15"/>
+        <image name="ic_close" width="14" height="14"/>
+        <image name="ic_comment" width="20" height="20"/>
+        <image name="ic_plus1" width="17" height="15"/>
+        <image name="ic_share" width="18" height="15"/>
     </resources>
 </document>
