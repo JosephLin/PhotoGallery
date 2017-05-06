@@ -19,7 +19,7 @@ class TransitionController: NSObject  {
             animationController.source = newValue
         }
     }
-    let animationController = AnimationController()
+    fileprivate let animationController = AnimationController()
 }
 
 // MARK: -

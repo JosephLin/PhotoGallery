@@ -18,10 +18,15 @@ class GridViewController: UICollectionViewController {
         private static let itemSpacing: CGFloat = 10
         private static let aspectRatio: CGFloat = 4.0 / 3.0
 
-        static func updateLayout(_ layout: UICollectionViewFlowLayout, forViewWidth viewWidth: CGFloat) {
+        static func updateLayout(on collectionView: UICollectionView) {
+            guard let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else {
+                return
+            }
+
             layout.sectionInset = UIEdgeInsets(top: sectionInset, left: sectionInset, bottom: sectionInset, right: sectionInset)
             layout.minimumInteritemSpacing = itemSpacing
             layout.minimumLineSpacing = itemSpacing
+            let viewWidth = collectionView.frame.size.width
             let width = floor((viewWidth - (2 * sectionInset) - (CGFloat(numberOfColumns - 1) * itemSpacing)) / CGFloat(numberOfColumns))
             let height = width / aspectRatio
             layout.itemSize = CGSize(width: width, height: height)
@@ -58,17 +63,12 @@ class GridViewController: UICollectionViewController {
 
     // MARK: -
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
 
-        updateLayout()
-    }
-
-    func updateLayout() {
-        guard let collectionView = collectionView, let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else {
-            return
+        if let collectionView = collectionView {
+            Layout.updateLayout(on: collectionView)
         }
-        Layout.updateLayout(layout, forViewWidth: collectionView.frame.size.width)
     }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
