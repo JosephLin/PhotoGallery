@@ -8,13 +8,9 @@
 
 import UIKit
 
-class ImageCell: UICollectionViewCell {
-    @IBOutlet weak var imageView: UIImageView!
-}
-
 class GridViewController: UICollectionViewController {
 
-    // MARK: -
+    // MARK: - Static Helper Structs
 
     private struct Layout {
         private static let numberOfColumns = 2
@@ -31,8 +27,6 @@ class GridViewController: UICollectionViewController {
             layout.itemSize = CGSize(width: width, height: height)
         }
     }
-
-    // MARK: -
 
     private struct DataSource {
         static let numberOfImages = 1000
@@ -58,7 +52,7 @@ class GridViewController: UICollectionViewController {
         }
     }
 
-    // MARK: -
+    // MARK: - Properties
 
     let transitionController = TransitionController()
 
@@ -96,4 +90,10 @@ class GridViewController: UICollectionViewController {
         controller.transitioningDelegate = transitionController
         present(controller, animated: true, completion: nil)
     }
+}
+
+// MARK: - Image Cell
+
+class ImageCell: UICollectionViewCell {
+    @IBOutlet weak var imageView: UIImageView!
 }

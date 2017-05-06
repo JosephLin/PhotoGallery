@@ -22,6 +22,8 @@ class TransitionController: NSObject  {
     let animationController = AnimationController()
 }
 
+// MARK: -
+
 extension TransitionController: UIViewControllerTransitioningDelegate {
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         animationController.direction = .presenting
@@ -37,6 +39,14 @@ extension TransitionController: UIViewControllerTransitioningDelegate {
 // MARK: - Animation Controller
 
 class AnimationController: NSObject {
+
+    // MARK: Constants
+
+    let transitionDuration: TimeInterval = 0.5
+    let dampingRatio: CGFloat = 0.8
+
+    // MARK: Properties
+
     enum Direction {
         case presenting
         case dismissing
@@ -46,14 +56,12 @@ class AnimationController: NSObject {
     var source: (frame: CGRect, image: UIImage)?
 }
 
+// MARK: -
+
 extension AnimationController: UIViewControllerAnimatedTransitioning {
-    struct Constants {
-        static let duration: TimeInterval = 0.5
-        static let dampingRatio: CGFloat = 0.8
-    }
 
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return Constants.duration
+        return transitionDuration
     }
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
@@ -137,7 +145,7 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
         UIView.animate(
             withDuration: duration,
             delay: 0.0,
-            usingSpringWithDamping: Constants.dampingRatio,
+            usingSpringWithDamping: dampingRatio,
             initialSpringVelocity: 0.0,
             options: [.curveEaseInOut],
             animations: {
