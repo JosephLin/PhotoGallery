@@ -47,8 +47,13 @@ class AnimationController: NSObject {
 }
 
 extension AnimationController: UIViewControllerAnimatedTransitioning {
+    struct Constants {
+        static let duration: TimeInterval = 0.5
+        static let dampingRatio: CGFloat = 0.8
+    }
+
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 0.5
+        return Constants.duration
     }
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
@@ -61,79 +66,89 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
                 return
         }
 
-        func frame(for imageSize: CGSize, centeredIn frame: CGRect) -> CGRect {
+        func aspectFitFrame(for size: CGSize, in frame: CGRect) -> CGRect {
             var finalWidth = frame.size.width
-            var finalHeight = finalWidth * (imageSize.height / imageSize.width)
+            var finalHeight = finalWidth * (size.height / size.width)
+
             if finalHeight > frame.size.height {
                 finalHeight = frame.size.height
-                finalWidth = finalHeight * (imageSize.width / imageSize.height)
+                finalWidth = finalHeight * (size.width / size.height)
             }
+
             let finalFrame = frame.insetBy(dx: 0.5 * (frame.size.width - finalWidth), dy: 0.5 * (frame.size.height - finalHeight))
+
             return finalFrame
         }
 
         let duration = transitionDuration(using: transitionContext)
-        let initialImageFrame = source.frame
-        let finalFrame = transitionContext.finalFrame(for: toViewController)
-        let finalImageFrame = frame(for: source.image.size, centeredIn: finalFrame)
 
+        // Calculate needed frames
+        let initialImageFrame = source.frame
+        let finalViewFrame = transitionContext.finalFrame(for: toViewController)
+        let finalImageFrame = aspectFitFrame(for: source.image.size, in: finalViewFrame)
+
+        // Insert the toView at the bottom. It would be fully covered by blackBackground until the end of the animation.
+        transitionContext.containerView.insertSubview(toView, at: 0)
+
+        // A white mask that covers the source image, so that it looks like the image is being moved instead of copied.
+        let mask = UIView()
+        mask.backgroundColor = .white
+        mask.frame = initialImageFrame
+        transitionContext.containerView.addSubview(mask)
+
+        // A black background that fades with the zooming animation
+        let blackBackground = UIView()
+        blackBackground.backgroundColor = .black
+        blackBackground.frame = finalViewFrame
+        transitionContext.containerView.addSubview(blackBackground)
+
+        // The image view used in the zooming animation
         let imageView = UIImageView(image: source.image)
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
+        transitionContext.containerView.addSubview(imageView)
 
-        let blackBackground = UIView()
-        blackBackground.backgroundColor = .black
-        blackBackground.frame = finalFrame
-        blackBackground.alpha = 0.0
-
-        let cover = UIView()
-        cover.backgroundColor = .white
-        cover.frame = initialImageFrame
-
+        let startState, endState: () -> Void
         switch direction {
         case .presenting:
-            transitionContext.containerView.addSubview(cover)
-            transitionContext.containerView.addSubview(blackBackground)
-            transitionContext.containerView.addSubview(imageView)
-            imageView.frame = initialImageFrame
-            UIView.animate(
-                withDuration: duration,
-                delay: 0.0,
-                usingSpringWithDamping: 0.9,
-                initialSpringVelocity: 0.0,
-                options: [.curveEaseInOut],
-                animations: {
-                    blackBackground.alpha = 1.0
-                    imageView.frame = finalImageFrame
-            },
-                completion: { (_) in
-                    transitionContext.containerView.addSubview(toView)
-                    imageView.removeFromSuperview()
-                    transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+            startState = {
+                blackBackground.alpha = 0.0
+                imageView.frame = initialImageFrame
+            }
+            endState = {
+                blackBackground.alpha = 1.0
+                imageView.frame = finalImageFrame
+            }
 
-            })
+
         case .dismissing:
-            transitionContext.containerView.insertSubview(toView, belowSubview: fromView)
-            fromView.alpha = 1.0
-            UIView.animate(withDuration: duration, animations: {
+            startState = {
                 fromView.alpha = 0.0
-            }, completion: { (_) in
-                transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
-            })
+                blackBackground.alpha = 1.0
+                imageView.frame = finalImageFrame
+            }
+            endState = {
+                blackBackground.alpha = 0.0
+                imageView.frame = initialImageFrame
+            }
         }
 
-    }
-
-}
-
-struct AnimationHelper {
-    static func yRotation(_ angle: Double) -> CATransform3D {
-        return CATransform3DMakeRotation(CGFloat(angle), 0.0, 1.0, 0.0)
-    }
-
-    static func perspectiveTransformForContainerView(_ containerView: UIView) {
-        var transform = CATransform3DIdentity
-        transform.m34 = -0.002
-        containerView.layer.sublayerTransform = transform
+        startState()
+        UIView.animate(
+            withDuration: duration,
+            delay: 0.0,
+            usingSpringWithDamping: Constants.dampingRatio,
+            initialSpringVelocity: 0.0,
+            options: [.curveEaseInOut],
+            animations: {
+                endState()
+            },
+            completion: { (_) in
+                mask.removeFromSuperview()
+                blackBackground.removeFromSuperview()
+                imageView.removeFromSuperview()
+                transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+            }
+        )
     }
 }
