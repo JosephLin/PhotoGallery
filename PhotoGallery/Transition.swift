@@ -13,6 +13,7 @@ import UIKit
 class TransitionController: NSObject  {
     let animationController = AnimationController()
     let interactionController = InteractionController()
+
     var source: (frame: CGRect, image: UIImage)? {
         get {
             return animationController.source
@@ -37,11 +38,11 @@ extension TransitionController: UIViewControllerTransitioningDelegate {
     }
 
     func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-        if interactionController.origin == nil {
-            return nil
+        if interactionController.isPanning {
+            interactionController.animator = animator
+            return interactionController
         }
-        interactionController.animationController = animationController
-        return interactionController
+        return nil
     }
 }
 
@@ -171,12 +172,16 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
     }
 }
 
-// MARK: -
+// MARK: - Interaction Controller
 
 class InteractionController: NSObject {
-    var origin: CGPoint?
-    var transitionContext: UIViewControllerContextTransitioning?
-    var animationController: UIViewControllerAnimatedTransitioning?
+    private var origin: CGPoint?
+    fileprivate var transitionContext: UIViewControllerContextTransitioning?
+    var animator: UIViewControllerAnimatedTransitioning?
+
+    var isPanning: Bool {
+        return origin != nil
+    }
 
     func handlePan(_ recognizer: UIPanGestureRecognizer) {
         switch recognizer.state {
@@ -184,23 +189,25 @@ class InteractionController: NSObject {
             origin = recognizer.view?.center
 
         case .changed:
-            let translation = recognizer.translation(in: recognizer.view)
             if let origin = origin {
+                let translation = recognizer.translation(in: recognizer.view)
                 recognizer.view?.center = CGPoint(x: origin.x + translation.x, y: origin.y + translation.y)
             }
 
         case .cancelled:
-            origin = nil
             transitionContext?.cancelInteractiveTransition()
+            origin = nil
+            transitionContext = nil
 
         case .ended:
+            if let transitionContext = transitionContext {
+                animator?.animateTransition(using: transitionContext)
+            }
             origin = nil
-            animationController?.animateTransition(using: transitionContext!)
-
-//            transitionContext?.finishInteractiveTransition()
+            transitionContext = nil
 
         default:
-            print("Unsupported")
+            break;
         }
     }
 }
