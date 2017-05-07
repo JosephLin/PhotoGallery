@@ -83,7 +83,7 @@ class GridViewController: UICollectionViewController {
         let image = DataSource.image(at: indexPath.item)
 
         let controller = DetailViewController.controller(with: image)
-        controller.transitionController.source = (frame: convertedFrame, image: image)
+        controller.transitionController.setThumbnail(image, frame: convertedFrame)
         present(controller, animated: true, completion: nil)
     }
 }

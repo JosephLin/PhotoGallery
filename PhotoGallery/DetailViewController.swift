@@ -38,7 +38,7 @@ class DetailViewController: UIViewController {
     }
 
     func handlePan(_ recognizer: UIPanGestureRecognizer) {
-        transitionController.interactionController.handlePan(recognizer)
+        transitionController.handlePan(recognizer)
 
         switch recognizer.state {
         case .began:

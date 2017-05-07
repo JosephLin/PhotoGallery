@@ -11,16 +11,16 @@ import UIKit
 // MARK: -  Transition Controller
 
 class TransitionController: NSObject  {
-    let animationController = AnimationController()
-    let interactionController = InteractionController()
+    fileprivate let animationController = AnimationController()
+    fileprivate let interactionController = InteractionController()
 
-    var source: (frame: CGRect, image: UIImage)? {
-        get {
-            return animationController.source
-        }
-        set {
-            animationController.source = newValue
-        }
+    func setThumbnail(_ image: UIImage, frame: CGRect) {
+        animationController.image = image
+        animationController.gridImageFrame = frame
+    }
+
+    func handlePan(_ recognizer: UIPanGestureRecognizer) {
+        interactionController.handlePan(recognizer)
     }
 }
 
@@ -39,7 +39,7 @@ extension TransitionController: UIViewControllerTransitioningDelegate {
 
     func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
         if interactionController.isPanning {
-            interactionController.animator = animator
+            interactionController.animator = animationController
             return interactionController
         }
         return nil
@@ -63,8 +63,9 @@ class AnimationController: NSObject {
     }
     var direction: Direction = .presenting
 
-    var source: (frame: CGRect, image: UIImage)?
-
+    var gridImageFrame: CGRect?
+    var image: UIImage?
+    var detailImageFrame: CGRect?
 }
 
 // MARK: -
@@ -80,7 +81,8 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
             let fromView = transitionContext.view(forKey: .from),
             let toView = transitionContext.view(forKey: .to),
             let toViewController = transitionContext.viewController(forKey: .to),
-            let source = source
+            let gridImageFrame = gridImageFrame,
+            let image = image
             else {
                 return
         }
@@ -102,9 +104,8 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
         let duration = transitionDuration(using: transitionContext)
 
         // Calculate needed frames
-        let initialImageFrame = source.frame
-        let finalViewFrame = transitionContext.finalFrame(for: toViewController)
-        let finalImageFrame = aspectFitFrame(for: source.image.size, in: finalViewFrame)
+        let detailViewFrame = transitionContext.finalFrame(for: toViewController)
+        let aspectFitDetailImageFrame = aspectFitFrame(for: image.size, in: detailImageFrame ?? detailViewFrame)
 
         // Insert the toView at the bottom. It would be fully covered by blackBackground until the end of the animation.
         transitionContext.containerView.insertSubview(toView, at: 0)
@@ -112,17 +113,17 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
         // A white mask that covers the source image, so that it looks like the image is being moved instead of copied.
         let mask = UIView()
         mask.backgroundColor = .white
-        mask.frame = initialImageFrame
+        mask.frame = gridImageFrame
         transitionContext.containerView.addSubview(mask)
 
         // A black background that fades with the zooming animation
         let blackBackground = UIView()
         blackBackground.backgroundColor = .black
-        blackBackground.frame = finalViewFrame
+        blackBackground.frame = detailViewFrame
         transitionContext.containerView.addSubview(blackBackground)
 
         // The image view used in the zooming animation
-        let imageView = UIImageView(image: source.image)
+        let imageView = UIImageView(image: image)
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         transitionContext.containerView.addSubview(imageView)
@@ -132,11 +133,11 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
         case .presenting:
             startState = {
                 blackBackground.alpha = 0.0
-                imageView.frame = initialImageFrame
+                imageView.frame = gridImageFrame
             }
             endState = {
                 blackBackground.alpha = 1.0
-                imageView.frame = finalImageFrame
+                imageView.frame = aspectFitDetailImageFrame
             }
 
 
@@ -144,11 +145,11 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
             startState = {
                 fromView.alpha = 0.0
                 blackBackground.alpha = 1.0
-                imageView.frame = finalImageFrame
+                imageView.frame = aspectFitDetailImageFrame
             }
             endState = {
                 blackBackground.alpha = 0.0
-                imageView.frame = initialImageFrame
+                imageView.frame = gridImageFrame
             }
         }
 
@@ -175,9 +176,10 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
 // MARK: - Interaction Controller
 
 class InteractionController: NSObject {
-    private var origin: CGPoint?
+    var animator: AnimationController?
     fileprivate var transitionContext: UIViewControllerContextTransitioning?
-    var animator: UIViewControllerAnimatedTransitioning?
+    private var origin: CGPoint?
+
 
     var isPanning: Bool {
         return origin != nil
@@ -201,6 +203,7 @@ class InteractionController: NSObject {
 
         case .ended:
             if let transitionContext = transitionContext {
+                animator?.detailImageFrame = recognizer.view?.frame
                 animator?.animateTransition(using: transitionContext)
             }
             origin = nil
