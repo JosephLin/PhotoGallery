@@ -8,24 +8,27 @@
 
 import UIKit
 
-protocol LayoutDelegate: class {
-    func frameForThumbnail(at index: Int, in view: UIView) -> CGRect
-}
+//protocol DetailViewControllerDataSource: class {
+//    func image(at index: Int) -> UIImage?
+//    func frameForThumbnail(at index: Int, in view: UIView) -> CGRect
+//}
+//
+//protocol DetailViewControllerDelegate: class {
+//    func didScrollToImage(at index: Int)
+//}
+
+// MARK: -
 
 class DetailViewController: UIViewController {
-    var dataSource: DataSource!
-    var currentIndex: Int!
-    weak var layoutDelegate: LayoutDelegate!
-    let transitionController = TransitionController()
-    let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: [UIPageViewControllerOptionInterPageSpacingKey: 10])
+    fileprivate var dataSource: DataSource!
+    private let transitionController = TransitionController()
+    fileprivate let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: [UIPageViewControllerOptionInterPageSpacingKey: 10])
 
     // MARK: -
 
-    static func controller(with dataSource: DataSource, currentIndex: Int, delegate: LayoutDelegate) -> DetailViewController {
+    static func controller(with dataSource: DataSource) -> DetailViewController {
         let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DetailViewController") as! DetailViewController
         controller.dataSource = dataSource
-        controller.currentIndex = currentIndex
-        controller.layoutDelegate = delegate
         controller.transitioningDelegate = controller.transitionController
         return controller
     }
@@ -42,9 +45,10 @@ class DetailViewController: UIViewController {
         let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
         pageViewController.view.addGestureRecognizer(panRecognizer)
 
-        let image = dataSource.image(at: currentIndex)
-        let controller = ImageViewController.controller(with: image, index: currentIndex)
-        pageViewController.setViewControllers([controller], direction: .forward, animated: false, completion: nil)
+        if let dataSource = dataSource, let image = dataSource.image(at: dataSource.currentIndex) {
+            let controller = ImageViewController.controller(with: image, index: dataSource.currentIndex)
+            pageViewController.setViewControllers([controller], direction: .forward, animated: false, completion: nil)
+        }
 
         pageViewController.delegate = self;
         pageViewController.dataSource = self;
@@ -78,21 +82,19 @@ class DetailViewController: UIViewController {
 
 extension DetailViewController: UIPageViewControllerDataSource {
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        let newIndex = currentIndex - 1
-        guard newIndex >= 0 else {
+        let newIndex = dataSource.currentIndex - 1
+        guard let image = dataSource.image(at: newIndex) else {
             return nil
         }
-        let image = dataSource.image(at: newIndex)
         let controller = ImageViewController.controller(with: image, index: newIndex)
         return controller
     }
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        let newIndex = currentIndex + 1
-        guard newIndex < dataSource.numberOfItems else {
+        let newIndex = dataSource.currentIndex + 1
+        guard let image = dataSource.image(at: newIndex) else {
             return nil
         }
-        let image = dataSource.image(at: newIndex)
         let controller = ImageViewController.controller(with: image, index: newIndex)
         return controller
     }
@@ -102,8 +104,32 @@ extension DetailViewController: UIPageViewControllerDelegate {
 
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         if let controller = pageViewController.viewControllers?.first as? ImageViewController {
-            currentIndex = controller.index
+            dataSource.currentIndex = controller.index
         }
+    }
+}
+
+extension DetailViewController: ImageZoomable {
+    var targetImage: UIImage {
+        return dataSource.image(at: dataSource.currentIndex) ?? UIImage()
+    }
+
+    func targetFrame(in view: UIView) -> CGRect {
+        func aspectFitFrame(for size: CGSize, in frame: CGRect) -> CGRect {
+            var finalWidth = frame.size.width
+            var finalHeight = finalWidth * (size.height / size.width)
+
+            if finalHeight > frame.size.height {
+                finalHeight = frame.size.height
+                finalWidth = finalHeight * (size.width / size.height)
+            }
+
+            let finalFrame = frame.insetBy(dx: 0.5 * (frame.size.width - finalWidth), dy: 0.5 * (frame.size.height - finalHeight))
+
+            return finalFrame
+        }
+
+        return aspectFitFrame(for: targetImage.size, in: pageViewController.view.frame)
     }
 }
 

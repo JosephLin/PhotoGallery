@@ -37,6 +37,7 @@
 
 
 # TODO
-
+- Update animation frame
 - Zoom
 - grid should scroll with selection
+- debug menu

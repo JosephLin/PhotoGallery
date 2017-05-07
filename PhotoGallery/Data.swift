@@ -9,8 +9,9 @@
 import UIKit
 
 protocol DataSource {
+    var currentIndex: Int { get set }
     var numberOfItems: Int { get }
-    func image(at: Int) -> UIImage
+    func image(at: Int) -> UIImage?
 }
 
 class MockDataSource: DataSource {
@@ -22,11 +23,17 @@ class MockDataSource: DataSource {
 
     var mockIndices = [Int: Int]()
 
+    var currentIndex = 0
+
     var numberOfItems: Int {
         return 1000
     }
 
-    func image(at index: Int) -> UIImage {
+    func image(at index: Int) -> UIImage? {
+        guard index >= 0 && index < numberOfItems else {
+            return nil
+        }
+
         let mockIndex: Int
         if let knownMockIndex = mockIndices[index] {
             mockIndex = knownMockIndex

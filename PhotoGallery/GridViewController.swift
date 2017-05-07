@@ -8,7 +8,9 @@
 
 import UIKit
 
-class GridViewController: UICollectionViewController {
+class GridViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+
+    @IBOutlet weak var collectionView: UICollectionView!
 
     // MARK: - Properties
 
@@ -16,9 +18,9 @@ class GridViewController: UICollectionViewController {
     private let sectionInset: CGFloat = 18
     private let itemSpacing: CGFloat = 10
     private let aspectRatio: CGFloat = 4.0 / 3.0
-    private let dataSource = MockDataSource()
+    fileprivate let dataSource = MockDataSource()
 
-    // MARK: -
+    // MARK: - Layout
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -40,30 +42,32 @@ class GridViewController: UICollectionViewController {
         layout.itemSize = CGSize(width: width, height: height)
     }
 
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    // MARK: - Collection View DataSource / Delegate
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return dataSource.numberOfItems
     }
 
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell", for: indexPath) as! ImageCell
         cell.imageView.image = dataSource.image(at: indexPath.item)
         return cell
     }
 
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let frame = collectionView.layoutAttributesForItem(at: indexPath)!.frame
-        let convertedFrame = collectionView.convert(frame, to: collectionView.window)
-        let image = dataSource.image(at: indexPath.item)
-
-        let controller = DetailViewController.controller(with: dataSource, currentIndex: indexPath.item, delegate: self)
-        controller.transitionController.setThumbnail(image, frame: convertedFrame)
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        dataSource.currentIndex = indexPath.item
+        let controller = DetailViewController.controller(with: dataSource)
         present(controller, animated: true, completion: nil)
     }
 }
 
-extension GridViewController: LayoutDelegate {
-    func frameForThumbnail(at index: Int, in view: UIView) -> CGRect {
-        let indexPath = IndexPath(item: index, section: 0)
+extension GridViewController: ImageZoomable {
+    var targetImage: UIImage {
+        return dataSource.image(at: dataSource.currentIndex) ?? UIImage()
+    }
+
+    func targetFrame(in view: UIView) -> CGRect {
+        let indexPath = IndexPath(item: dataSource.currentIndex, section: 0)
         guard let collectionView = collectionView, let attributes = collectionView.layoutAttributesForItem(at: indexPath) else {
             return .zero
         }

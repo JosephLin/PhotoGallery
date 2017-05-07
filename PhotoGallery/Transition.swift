@@ -8,15 +8,22 @@
 
 import UIKit
 
+protocol ImageZoomable {
+    var targetImage: UIImage { get }
+    func targetFrame(in view: UIView) -> CGRect
+}
+
 // MARK: -  Transition Controller
 
 class TransitionController: NSObject  {
-    fileprivate let animationController = AnimationController()
-    fileprivate let interactionController = InteractionController()
+    fileprivate let animationController: AnimationController
+    fileprivate let interactionController: InteractionController
 
-    func setThumbnail(_ image: UIImage, frame: CGRect) {
-        animationController.image = image
-        animationController.gridImageFrame = frame
+    override init() {
+        animationController = AnimationController()
+        interactionController = InteractionController()
+        interactionController.animator = animationController
+        super.init()
     }
 
     func handlePan(_ recognizer: UIPanGestureRecognizer) {
@@ -62,10 +69,6 @@ class AnimationController: NSObject {
         case dismissing
     }
     var direction: Direction = .presenting
-
-    var gridImageFrame: CGRect?
-    var image: UIImage?
-    var detailImageFrame: CGRect?
 }
 
 // MARK: -
@@ -78,34 +81,33 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         guard
-            let fromView = transitionContext.view(forKey: .from),
-            let toView = transitionContext.view(forKey: .to),
+            let fromViewController = transitionContext.viewController(forKey: .from),
             let toViewController = transitionContext.viewController(forKey: .to),
-            let gridImageFrame = gridImageFrame,
-            let image = image
+            let fromView = transitionContext.view(forKey: .from),
+            let toView = transitionContext.view(forKey: .to)
             else {
                 return
-        }
-
-        func aspectFitFrame(for size: CGSize, in frame: CGRect) -> CGRect {
-            var finalWidth = frame.size.width
-            var finalHeight = finalWidth * (size.height / size.width)
-
-            if finalHeight > frame.size.height {
-                finalHeight = frame.size.height
-                finalWidth = finalHeight * (size.width / size.height)
-            }
-
-            let finalFrame = frame.insetBy(dx: 0.5 * (frame.size.width - finalWidth), dy: 0.5 * (frame.size.height - finalHeight))
-
-            return finalFrame
         }
 
         let duration = transitionDuration(using: transitionContext)
 
         // Calculate needed frames
-        let detailViewFrame = transitionContext.finalFrame(for: toViewController)
-        let aspectFitDetailImageFrame = aspectFitFrame(for: image.size, in: detailImageFrame ?? detailViewFrame)
+        let gridZoomable: ImageZoomable
+        let detailZoomable: ImageZoomable
+        switch direction {
+        case .presenting:
+            gridZoomable = fromViewController as! ImageZoomable
+            detailZoomable = toViewController as! ImageZoomable
+        case .dismissing:
+            gridZoomable = toViewController as! ImageZoomable
+            detailZoomable = fromViewController as! ImageZoomable
+        }
+
+        let image = detailZoomable.targetImage
+        let viewFrame = transitionContext.finalFrame(for: toViewController)
+        let gridImageFrame = gridZoomable.targetFrame(in: transitionContext.containerView)
+        let detailImageFrame = detailZoomable.targetFrame(in: transitionContext.containerView)
+
 
         // Insert the toView at the bottom. It would be fully covered by blackBackground until the end of the animation.
         transitionContext.containerView.insertSubview(toView, at: 0)
@@ -119,7 +121,7 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
         // A black background that fades with the zooming animation
         let blackBackground = UIView()
         blackBackground.backgroundColor = .black
-        blackBackground.frame = detailViewFrame
+        blackBackground.frame = viewFrame
         transitionContext.containerView.addSubview(blackBackground)
 
         // The image view used in the zooming animation
@@ -137,7 +139,7 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
             }
             endState = {
                 blackBackground.alpha = 1.0
-                imageView.frame = aspectFitDetailImageFrame
+                imageView.frame = detailImageFrame
             }
 
 
@@ -145,7 +147,7 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
             startState = {
                 fromView.alpha = 0.0
                 blackBackground.alpha = 1.0
-                imageView.frame = aspectFitDetailImageFrame
+                imageView.frame = detailImageFrame
             }
             endState = {
                 blackBackground.alpha = 0.0
@@ -176,7 +178,7 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
 // MARK: - Interaction Controller
 
 class InteractionController: NSObject {
-    var animator: AnimationController?
+    weak var animator: AnimationController?
     fileprivate var transitionContext: UIViewControllerContextTransitioning?
     private var origin: CGPoint?
 
@@ -203,7 +205,6 @@ class InteractionController: NSObject {
 
         case .ended:
             if let transitionContext = transitionContext {
-                animator?.detailImageFrame = recognizer.view?.frame
                 animator?.animateTransition(using: transitionContext)
             }
             origin = nil
