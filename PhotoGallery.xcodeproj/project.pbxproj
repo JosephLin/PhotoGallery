@@ -14,6 +14,7 @@
 		7C300F911EBAD63600716547 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C300F8F1EBAD63600716547 /* LaunchScreen.storyboard */; };
 		7C4ADC4E1EBD5316002C4FFA /* Transition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4ADC4D1EBD5316002C4FFA /* Transition.swift */; };
 		7C4ADC521EBD78E5002C4FFA /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4ADC511EBD78E5002C4FFA /* DetailViewController.swift */; };
+		7C4ADC581EBEB18C002C4FFA /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4ADC571EBEB18C002C4FFA /* Data.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		7C300F921EBAD63600716547 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7C4ADC4D1EBD5316002C4FFA /* Transition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transition.swift; sourceTree = "<group>"; };
 		7C4ADC511EBD78E5002C4FFA /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		7C4ADC571EBEB18C002C4FFA /* Data.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		7CC0DBA11EBADF0200AA7F19 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -64,6 +66,7 @@
 				7C300F881EBAD63600716547 /* GridViewController.swift */,
 				7C4ADC511EBD78E5002C4FFA /* DetailViewController.swift */,
 				7C4ADC4D1EBD5316002C4FFA /* Transition.swift */,
+				7C4ADC571EBEB18C002C4FFA /* Data.swift */,
 				7C300F8A1EBAD63600716547 /* Main.storyboard */,
 				7C300F8D1EBAD63600716547 /* Assets.xcassets */,
 				7C300F8F1EBAD63600716547 /* LaunchScreen.storyboard */,
@@ -145,6 +148,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7C300F891EBAD63600716547 /* GridViewController.swift in Sources */,
+				7C4ADC581EBEB18C002C4FFA /* Data.swift in Sources */,
 				7C4ADC521EBD78E5002C4FFA /* DetailViewController.swift in Sources */,
 				7C4ADC4E1EBD5316002C4FFA /* Transition.swift in Sources */,
 				7C300F871EBAD63600716547 /* AppDelegate.swift in Sources */,
