@@ -11,6 +11,8 @@ import UIKit
 // MARK: -  Transition Controller
 
 class TransitionController: NSObject  {
+    let animationController = AnimationController()
+    let interactionController = InteractionController()
     var source: (frame: CGRect, image: UIImage)? {
         get {
             return animationController.source
@@ -19,7 +21,6 @@ class TransitionController: NSObject  {
             animationController.source = newValue
         }
     }
-    fileprivate let animationController = AnimationController()
 }
 
 // MARK: -
@@ -33,6 +34,14 @@ extension TransitionController: UIViewControllerTransitioningDelegate {
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         animationController.direction = .dismissing
         return animationController
+    }
+
+    func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        if interactionController.origin == nil {
+            return nil
+        }
+        interactionController.animationController = animationController
+        return interactionController
     }
 }
 
@@ -54,6 +63,7 @@ class AnimationController: NSObject {
     var direction: Direction = .presenting
 
     var source: (frame: CGRect, image: UIImage)?
+
 }
 
 // MARK: -
@@ -158,5 +168,45 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
                 transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
             }
         )
+    }
+}
+
+// MARK: -
+
+class InteractionController: NSObject {
+    var origin: CGPoint?
+    var transitionContext: UIViewControllerContextTransitioning?
+    var animationController: UIViewControllerAnimatedTransitioning?
+
+    func handlePan(_ recognizer: UIPanGestureRecognizer) {
+        switch recognizer.state {
+        case .began:
+            origin = recognizer.view?.center
+
+        case .changed:
+            let translation = recognizer.translation(in: recognizer.view)
+            if let origin = origin {
+                recognizer.view?.center = CGPoint(x: origin.x + translation.x, y: origin.y + translation.y)
+            }
+
+        case .cancelled:
+            origin = nil
+            transitionContext?.cancelInteractiveTransition()
+
+        case .ended:
+            origin = nil
+            animationController?.animateTransition(using: transitionContext!)
+
+//            transitionContext?.finishInteractiveTransition()
+
+        default:
+            print("Unsupported")
+        }
+    }
+}
+
+extension InteractionController: UIViewControllerInteractiveTransitioning {
+    func startInteractiveTransition(_ transitionContext: UIViewControllerContextTransitioning) {
+        self.transitionContext = transitionContext
     }
 }

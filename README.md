@@ -26,7 +26,7 @@
 - Paged (i.e. auto-snapped, only allow pan to +/- 1 page)
 - Parallex? probably not
 
-- Pan up-down to dismiss
+- Pan up-down to dismiss (move on both x and y axis?)
 - on up-down pan, crossfade background to grid view
 - let go (far enough from center) to shrink to thumbnail
 

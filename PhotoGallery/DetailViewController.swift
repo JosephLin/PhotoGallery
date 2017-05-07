@@ -12,6 +12,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var imageView: UIImageView!
     var image: UIImage!
     let transitionController = TransitionController()
+    let panRecognizer = UIPanGestureRecognizer()
 
     // MARK: -
 
@@ -27,12 +28,24 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        transitionController.addPanRecognizer(to: view)
+        panRecognizer.addTarget(self, action: #selector(handlePan))
+        imageView.addGestureRecognizer(panRecognizer)
         imageView.image = image
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
+    }
+
+    func handlePan(_ recognizer: UIPanGestureRecognizer) {
+        transitionController.interactionController.handlePan(recognizer)
+
+        switch recognizer.state {
+        case .began:
+            dismiss(animated: true, completion: nil)
+        default:
+            break
+        }
     }
 
     @IBAction func closeButtonTapped(_ sender: Any) {
