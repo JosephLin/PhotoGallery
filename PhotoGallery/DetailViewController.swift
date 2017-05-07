@@ -8,20 +8,10 @@
 
 import UIKit
 
-//protocol DetailViewControllerDataSource: class {
-//    func image(at index: Int) -> UIImage?
-//    func frameForThumbnail(at index: Int, in view: UIView) -> CGRect
-//}
-//
-//protocol DetailViewControllerDelegate: class {
-//    func didScrollToImage(at index: Int)
-//}
-
-// MARK: -
-
 class DetailViewController: UIViewController {
-    fileprivate var dataSource: DataSource!
+
     private let transitionController = TransitionController()
+    fileprivate var dataSource: DataSource!
     fileprivate let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: [UIPageViewControllerOptionInterPageSpacingKey: 10])
 
     // MARK: -
@@ -46,7 +36,7 @@ class DetailViewController: UIViewController {
         pageViewController.view.addGestureRecognizer(panRecognizer)
 
         if let dataSource = dataSource, let image = dataSource.image(at: dataSource.currentIndex) {
-            let controller = ImageViewController.controller(with: image, index: dataSource.currentIndex)
+            let controller = ImageViewController(image: image, index: dataSource.currentIndex)
             pageViewController.setViewControllers([controller], direction: .forward, animated: false, completion: nil)
         }
 
@@ -86,7 +76,7 @@ extension DetailViewController: UIPageViewControllerDataSource {
         guard let image = dataSource.image(at: newIndex) else {
             return nil
         }
-        let controller = ImageViewController.controller(with: image, index: newIndex)
+        let controller = ImageViewController(image: image, index: newIndex)
         return controller
     }
 
@@ -95,7 +85,7 @@ extension DetailViewController: UIPageViewControllerDataSource {
         guard let image = dataSource.image(at: newIndex) else {
             return nil
         }
-        let controller = ImageViewController.controller(with: image, index: newIndex)
+        let controller = ImageViewController(image: image, index: newIndex)
         return controller
     }
 }
@@ -133,20 +123,23 @@ extension DetailViewController: ImageZoomable {
     }
 }
 
-// MARK: -
+// MARK: - ImageViewController
 
 class ImageViewController: UIViewController {
-    @IBOutlet weak var imageView: UIImageView!
-    var image: UIImage!
-    var index: Int!
+    let imageView = UIImageView()
+    let image: UIImage
+    let index: Int
 
     // MARK: -
 
-    static func controller(with image: UIImage, index: Int) -> ImageViewController {
-        let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "ImageViewController") as! ImageViewController
-        controller.image = image
-        controller.index = index
-        return controller
+    init(image: UIImage, index: Int) {
+        self.image = image
+        self.index = index
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     // MARK: -
@@ -155,6 +148,9 @@ class ImageViewController: UIViewController {
         super.viewDidLoad()
 
         imageView.image = image
+        imageView.contentMode = .scaleAspectFit
+        imageView.frame = view.bounds
+        view.addSubview(imageView)
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {

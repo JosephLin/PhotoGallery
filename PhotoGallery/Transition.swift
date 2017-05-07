@@ -92,15 +92,26 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
         let duration = transitionDuration(using: transitionContext)
 
         // Calculate needed frames
+
+        func imageZoomable(from vc: UIViewController) -> ImageZoomable? {
+            if let controller = vc as? ImageZoomable {
+                return controller
+            }
+            if let navController = vc as? UINavigationController, let controller = navController.topViewController as? ImageZoomable {
+                return controller
+            }
+            return nil
+        }
+
         let gridZoomable: ImageZoomable
         let detailZoomable: ImageZoomable
         switch direction {
         case .presenting:
-            gridZoomable = fromViewController as! ImageZoomable
-            detailZoomable = toViewController as! ImageZoomable
+            gridZoomable = imageZoomable(from: fromViewController)!
+            detailZoomable = imageZoomable(from: toViewController)!
         case .dismissing:
-            gridZoomable = toViewController as! ImageZoomable
-            detailZoomable = fromViewController as! ImageZoomable
+            gridZoomable = imageZoomable(from: toViewController)!
+            detailZoomable = imageZoomable(from: fromViewController)!
         }
 
         let image = detailZoomable.targetImage

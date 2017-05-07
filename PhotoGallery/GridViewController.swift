@@ -8,19 +8,18 @@
 
 import UIKit
 
-class GridViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
-
-    @IBOutlet weak var collectionView: UICollectionView!
+class GridViewController: UIViewController {
 
     // MARK: - Properties
 
+    @IBOutlet weak var collectionView: UICollectionView!
+    fileprivate let dataSource = MockDataSource()
     private let numberOfColumns = 2
     private let sectionInset: CGFloat = 18
     private let itemSpacing: CGFloat = 10
     private let aspectRatio: CGFloat = 4.0 / 3.0
-    fileprivate let dataSource = MockDataSource()
 
-    // MARK: - Layout
+    // MARK: Layout
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -41,8 +40,11 @@ class GridViewController: UIViewController, UICollectionViewDataSource, UICollec
         let height = width / aspectRatio
         layout.itemSize = CGSize(width: width, height: height)
     }
+}
 
-    // MARK: - Collection View DataSource / Delegate
+// MARK: - UICollectionView DataSource / Delegate
+
+extension GridViewController: UICollectionViewDataSource, UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return dataSource.numberOfItems
@@ -61,7 +63,10 @@ class GridViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
 }
 
+// MARK: - ImageZoomable
+
 extension GridViewController: ImageZoomable {
+
     var targetImage: UIImage {
         return dataSource.image(at: dataSource.currentIndex) ?? UIImage()
     }
