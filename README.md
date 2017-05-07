@@ -34,3 +34,9 @@
 - allow pan between photos / pan to dismiss when zoomed?
 
 - interactable / interruptible transition
+
+
+# TODO
+
+- Zoom
+- grid should scroll with selection

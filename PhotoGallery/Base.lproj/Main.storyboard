@@ -92,9 +92,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="g0T-iI-56C">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                            </imageView>
                             <navigationBar contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="Zef-4y-duD">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="64"/>
                                 <constraints>
@@ -128,24 +125,49 @@
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Zef-4y-duD" firstAttribute="leading" secondItem="h7Y-US-Oji" secondAttribute="leading" id="71l-3P-1qG"/>
-                            <constraint firstAttribute="trailing" secondItem="g0T-iI-56C" secondAttribute="trailing" id="PyA-rQ-grO"/>
                             <constraint firstItem="QWT-h2-GbP" firstAttribute="leading" secondItem="h7Y-US-Oji" secondAttribute="leading" id="cG7-iZ-bTK"/>
-                            <constraint firstItem="g0T-iI-56C" firstAttribute="top" secondItem="h7Y-US-Oji" secondAttribute="top" id="fNc-mh-xgy"/>
                             <constraint firstItem="f2c-dJ-NCQ" firstAttribute="top" secondItem="QWT-h2-GbP" secondAttribute="bottom" id="fpc-j8-OEX"/>
                             <constraint firstItem="Zef-4y-duD" firstAttribute="top" secondItem="h7Y-US-Oji" secondAttribute="top" id="gN5-jW-oBt"/>
-                            <constraint firstItem="f2c-dJ-NCQ" firstAttribute="top" secondItem="g0T-iI-56C" secondAttribute="bottom" id="qJa-72-WXi"/>
-                            <constraint firstItem="g0T-iI-56C" firstAttribute="leading" secondItem="h7Y-US-Oji" secondAttribute="leading" id="rnf-Pe-x1R"/>
                             <constraint firstAttribute="trailing" secondItem="Zef-4y-duD" secondAttribute="trailing" id="z76-Te-kDf"/>
                             <constraint firstAttribute="trailing" secondItem="QWT-h2-GbP" secondAttribute="trailing" id="zaF-4L-z9y"/>
                         </constraints>
                     </view>
-                    <connections>
-                        <outlet property="imageView" destination="g0T-iI-56C" id="QmD-XS-jd1"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ycc-AI-rDz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1172" y="-142"/>
+        </scene>
+        <!--Image View Controller-->
+        <scene sceneID="qWU-d5-ccY">
+            <objects>
+                <viewController storyboardIdentifier="ImageViewController" id="ad5-49-mXG" customClass="ImageViewController" customModule="PhotoGallery" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="dJr-jo-HVq"/>
+                        <viewControllerLayoutGuide type="bottom" id="Mw1-O1-VhF"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="eqM-Mq-9l5">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="eia-6Y-vcE">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="eia-6Y-vcE" secondAttribute="trailing" id="4mi-Fu-l0w"/>
+                            <constraint firstItem="eia-6Y-vcE" firstAttribute="top" secondItem="eqM-Mq-9l5" secondAttribute="top" id="86V-XY-0ay"/>
+                            <constraint firstItem="eia-6Y-vcE" firstAttribute="leading" secondItem="eqM-Mq-9l5" secondAttribute="leading" id="GTA-3z-cDG"/>
+                            <constraint firstAttribute="bottom" secondItem="eia-6Y-vcE" secondAttribute="bottom" id="eQ8-TY-H5z"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="imageView" destination="eia-6Y-vcE" id="Fu2-UD-AUZ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5ol-eL-oeM" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1905" y="-143"/>
         </scene>
     </scenes>
     <resources>

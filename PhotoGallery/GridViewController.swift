@@ -55,9 +55,20 @@ class GridViewController: UICollectionViewController {
         let convertedFrame = collectionView.convert(frame, to: collectionView.window)
         let image = dataSource.image(at: indexPath.item)
 
-        let controller = DetailViewController.controller(with: image)
+        let controller = DetailViewController.controller(with: dataSource, currentIndex: indexPath.item, delegate: self)
         controller.transitionController.setThumbnail(image, frame: convertedFrame)
         present(controller, animated: true, completion: nil)
+    }
+}
+
+extension GridViewController: LayoutDelegate {
+    func frameForThumbnail(at index: Int, in view: UIView) -> CGRect {
+        let indexPath = IndexPath(item: index, section: 0)
+        guard let collectionView = collectionView, let attributes = collectionView.layoutAttributesForItem(at: indexPath) else {
+            return .zero
+        }
+        let frame = collectionView.convert(attributes.frame, to: view)
+        return frame
     }
 }
 
