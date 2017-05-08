@@ -19,3 +19,10 @@ extension UIViewController {
         return controller as? T
     }
 }
+
+extension CGPoint {
+    func distance(to point2: CGPoint) -> CGFloat {
+        let distance = sqrt( pow(x - point2.x, 2) + pow(y - point2.y, 2) )
+        return distance
+    }
+}

@@ -193,7 +193,7 @@ class InteractionController: NSObject {
     weak var animator: AnimationController?
     fileprivate var transitionContext: UIViewControllerContextTransitioning?
     private var origin: CGPoint?
-
+    private let minimumPanDistance: CGFloat = 50
 
     var isPanning: Bool {
         return origin != nil
@@ -212,15 +212,24 @@ class InteractionController: NSObject {
 
         case .cancelled:
             transitionContext?.cancelInteractiveTransition()
+            transitionContext?.completeTransition(false)
             origin = nil
-            transitionContext = nil
 
         case .ended:
-            if let transitionContext = transitionContext {
-                animator?.animateTransition(using: transitionContext)
+            if let origin = origin, let center = recognizer.view?.center, origin.distance(to: center) > minimumPanDistance {
+                if let transitionContext = transitionContext {
+                    animator?.animateTransition(using: transitionContext)
+                }
+                transitionContext = nil
+            } else {
+                UIView.animate(withDuration: 0.2, animations: { 
+                    recognizer.view?.center = self.origin!
+                }, completion: { (_) in
+                    self.transitionContext?.cancelInteractiveTransition()
+                    self.transitionContext?.completeTransition(false)
+                })
             }
             origin = nil
-            transitionContext = nil
 
         default:
             break;
