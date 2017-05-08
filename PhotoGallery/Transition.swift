@@ -70,6 +70,13 @@ class AnimationController: NSObject {
         case dismissing
     }
     var direction: Direction = .presenting
+
+    fileprivate let dummyImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        return imageView
+    }()
 }
 
 // MARK: -
@@ -114,34 +121,32 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
         gridZoomable.isTransitioning = true
         detailZoomable.isTransitioning = true
 
-        // ...and use a mock image view for animation
-        let imageView = UIImageView(image: image)
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        transitionContext.containerView.addSubview(imageView)
+        // ...and use a dummy image view for animation
+        dummyImageView.image = image
+        transitionContext.containerView.addSubview(dummyImageView)
 
         // Set proper states by direction
         let startState, endState: () -> Void
         switch direction {
         case .presenting:
             startState = {
-                transitionContext.containerView.insertSubview(toView, belowSubview: imageView)
+                transitionContext.containerView.insertSubview(toView, belowSubview: self.dummyImageView)
                 toView.alpha = 0.0
-                imageView.frame = gridImageFrame
+                self.dummyImageView.frame = gridImageFrame
             }
             endState = {
                 toView.alpha = 1.0
-                imageView.frame = detailImageFrame
+                self.dummyImageView.frame = detailImageFrame
             }
         case .dismissing:
             startState = {
                 transitionContext.containerView.insertSubview(toView, at: 0)
-                fromView.alpha = 1.0
-                imageView.frame = detailImageFrame
+//                fromView.alpha = 1.0
+//                self.dummyImageView.frame = detailImageFrame
             }
             endState = {
                 fromView.alpha = 0.0
-                imageView.frame = gridImageFrame
+                self.dummyImageView.frame = gridImageFrame
             }
         }
 
@@ -159,7 +164,7 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
             completion: { (_) in
                 gridZoomable.isTransitioning = false
                 detailZoomable.isTransitioning = false
-                imageView.removeFromSuperview()
+                self.dummyImageView.removeFromSuperview()
                 transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
             }
         )
@@ -173,12 +178,6 @@ class InteractionController: NSObject {
     fileprivate var transitionContext: UIViewControllerContextTransitioning?
     private var origin: CGPoint?
     private let minimumPanDistance: CGFloat = 50
-    let imageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        return imageView
-    }()
 
     var isPanning: Bool {
         return origin != nil
@@ -193,9 +192,8 @@ class InteractionController: NSObject {
             origin = recognizer.view?.center
 
         case .changed:
-            if let origin = origin {
+            if let origin = origin, let imageView = animator?.dummyImageView {
                 let translation = recognizer.translation(in: recognizer.view)
-                imageView.center = CGPoint(x: origin.x + translation.x, y: origin.y + translation.y)
 
                 if let transitionContext = transitionContext, let fromView = transitionContext.view(forKey: .from), let toView = transitionContext.view(forKey: .to) {
                     if !imageView.isDescendant(of: transitionContext.containerView) {
@@ -218,26 +216,28 @@ class InteractionController: NSObject {
                     let alpha = 1.0 - min(1.0, distance / (0.5 * fromView.frame.size.height))
                     fromView.alpha = alpha
                 }
+
+                imageView.center = CGPoint(x: origin.x + translation.x, y: origin.y + translation.y)
             }
 
         case .ended:
-            if let origin = origin, origin.distance(to: imageView.center) > minimumPanDistance {
+            if let origin = origin, let imageView = animator?.dummyImageView, origin.distance(to: imageView.center) > minimumPanDistance {
                 if let transitionContext = transitionContext {
                     animator?.animateTransition(using: transitionContext)
                 }
                 transitionContext = nil
             } else {
                 UIView.animate(withDuration: 0.2, animations: { 
-                    recognizer.view?.center = self.origin!
+                    self.animator?.dummyImageView.center = self.origin!
                 }, completion: { (_) in
                     detailZoomable?.isTransitioning = false
                     gridZoomable?.isTransitioning = false
                     self.transitionContext?.cancelInteractiveTransition()
                     self.transitionContext?.completeTransition(false)
+                    self.animator?.dummyImageView.removeFromSuperview()
                 })
             }
             origin = nil
-            imageView.removeFromSuperview()
 
         default:
             break;
