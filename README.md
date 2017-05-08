@@ -1,6 +1,5 @@
 # PhotoGallery
 
-
 - Number of photos?
 - How big are the photos? should we create low-res thumbnails?
 - always two columns? Fixed/proportional spacing? Fixed/proportional cell size?
@@ -34,10 +33,10 @@
 - allow pan between photos / pan to dismiss when zoomed?
 
 - interactable / interruptible transition
+- Update animation frame
+- grid should scroll with selection
 
 
 # TODO
-- Update animation frame
 - Zoom
-- grid should scroll with selection
 - debug menu

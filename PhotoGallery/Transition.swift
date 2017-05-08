@@ -10,7 +10,7 @@ import UIKit
 
 protocol ImageZoomable {
     var targetImage: UIImage { get }
-    func targetFrame(in view: UIView) -> CGRect
+    func targetFrame(in view: UIView, shouldCenterIfOffScreen: Bool) -> CGRect
 }
 
 // MARK: -  Transition Controller
@@ -116,8 +116,8 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
 
         let image = detailZoomable.targetImage
         let viewFrame = transitionContext.finalFrame(for: toViewController)
-        let gridImageFrame = gridZoomable.targetFrame(in: transitionContext.containerView)
-        let detailImageFrame = detailZoomable.targetFrame(in: transitionContext.containerView)
+        let gridImageFrame = gridZoomable.targetFrame(in: transitionContext.containerView, shouldCenterIfOffScreen: true)
+        let detailImageFrame = detailZoomable.targetFrame(in: transitionContext.containerView, shouldCenterIfOffScreen: false)
 
 
         // Insert the toView at the bottom. It would be fully covered by blackBackground until the end of the animation.

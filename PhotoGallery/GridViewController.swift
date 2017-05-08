@@ -71,13 +71,19 @@ extension GridViewController: ImageZoomable {
         return dataSource.image(at: dataSource.currentIndex) ?? UIImage()
     }
 
-    func targetFrame(in view: UIView) -> CGRect {
+    func targetFrame(in view: UIView, shouldCenterIfOffScreen: Bool) -> CGRect {
         let indexPath = IndexPath(item: dataSource.currentIndex, section: 0)
         guard let collectionView = collectionView, let attributes = collectionView.layoutAttributesForItem(at: indexPath) else {
             return .zero
         }
         let frame = collectionView.convert(attributes.frame, to: view)
-        return frame
+
+        if shouldCenterIfOffScreen && collectionView.frame.intersects(frame) == false {
+            collectionView.scrollToItem(at: indexPath, at: .centeredVertically, animated: false)
+            return targetFrame(in: view, shouldCenterIfOffScreen: false)
+        } else {
+            return frame
+        }
     }
 }
 
