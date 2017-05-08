@@ -121,6 +121,7 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
 
 
         // Insert the toView at the bottom. It would be fully covered by blackBackground until the end of the animation.
+        toView.frame = viewFrame
         transitionContext.containerView.insertSubview(toView, at: 0)
 
         // A white mask that covers the source image, so that it looks like the image is being moved instead of copied.

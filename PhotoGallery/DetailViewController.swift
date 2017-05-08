@@ -8,16 +8,19 @@
 
 import UIKit
 
-class DetailViewController: UIViewController {
+// MARK: - DetailViewController
 
-    private let transitionController = TransitionController()
+class DetailViewController: UIViewController {
+    @IBOutlet weak var navigationBar: UINavigationBar!
+    @IBOutlet weak var toolbar: UIToolbar!
     fileprivate var dataSource: DataSource!
     fileprivate let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: [UIPageViewControllerOptionInterPageSpacingKey: 10])
+    private let transitionController = TransitionController()
 
     // MARK: -
 
     static func controller(with dataSource: DataSource) -> DetailViewController {
-        let controller = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DetailViewController") as! DetailViewController
+        let controller = DetailViewController.controller(fromStoryboard: "Main")!
         controller.dataSource = dataSource
         controller.transitioningDelegate = controller.transitionController
         return controller
@@ -36,7 +39,7 @@ class DetailViewController: UIViewController {
         pageViewController.view.addGestureRecognizer(panRecognizer)
 
         if let dataSource = dataSource, let image = dataSource.image(at: dataSource.currentIndex) {
-            let controller = ImageViewController(image: image, index: dataSource.currentIndex)
+            let controller = ImageViewController.controller(with: image, index: dataSource.currentIndex)
             pageViewController.setViewControllers([controller], direction: .forward, animated: false, completion: nil)
         }
 
@@ -54,6 +57,8 @@ class DetailViewController: UIViewController {
         pageViewController.view.frame = self.view.bounds
     }
 
+    // MARK: - User Interaction
+
     func handlePan(_ recognizer: UIPanGestureRecognizer) {
         transitionController.handlePan(recognizer)
 
@@ -70,13 +75,15 @@ class DetailViewController: UIViewController {
     }
 }
 
+// MARK: - UIPageViewControllerDataSource
+
 extension DetailViewController: UIPageViewControllerDataSource {
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         let newIndex = dataSource.currentIndex - 1
         guard let image = dataSource.image(at: newIndex) else {
             return nil
         }
-        let controller = ImageViewController(image: image, index: newIndex)
+        let controller = ImageViewController.controller(with: image, index: newIndex)
         return controller
     }
 
@@ -85,10 +92,12 @@ extension DetailViewController: UIPageViewControllerDataSource {
         guard let image = dataSource.image(at: newIndex) else {
             return nil
         }
-        let controller = ImageViewController(image: image, index: newIndex)
+        let controller = ImageViewController.controller(with: image, index: newIndex)
         return controller
     }
 }
+
+// MARK: - UIPageViewControllerDelegate
 
 extension DetailViewController: UIPageViewControllerDelegate {
 
@@ -98,6 +107,8 @@ extension DetailViewController: UIPageViewControllerDelegate {
         }
     }
 }
+
+// MARK: - ImageZoomable
 
 extension DetailViewController: ImageZoomable {
     var targetImage: UIImage {
@@ -126,20 +137,17 @@ extension DetailViewController: ImageZoomable {
 // MARK: - ImageViewController
 
 class ImageViewController: UIViewController {
-    let imageView = UIImageView()
-    let image: UIImage
-    let index: Int
+    @IBOutlet weak var imageView: UIImageView!
+    var image: UIImage!
+    var index: Int!
 
     // MARK: -
 
-    init(image: UIImage, index: Int) {
-        self.image = image
-        self.index = index
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    static func controller(with image: UIImage, index: Int) -> ImageViewController {
+        let controller = ImageViewController.controller(fromStoryboard: "Main")!
+        controller.image = image
+        controller.index = index
+        return controller
     }
 
     // MARK: -
@@ -148,9 +156,6 @@ class ImageViewController: UIViewController {
         super.viewDidLoad()
 
         imageView.image = image
-        imageView.contentMode = .scaleAspectFit
-        imageView.frame = view.bounds
-        view.addSubview(imageView)
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
