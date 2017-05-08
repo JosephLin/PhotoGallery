@@ -91,24 +91,15 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
         }
 
         // Grab necessary variables
-        func imageZoomable(from vc: UIViewController) -> ImageZoomable? {
-            if let controller = vc as? ImageZoomable {
-                return controller
-            }
-            if let navController = vc as? UINavigationController, let controller = navController.topViewController as? ImageZoomable {
-                return controller
-            }
-            return nil
-        }
         var gridZoomable: ImageZoomable
         var detailZoomable: ImageZoomable
         switch direction {
         case .presenting:
-            gridZoomable = imageZoomable(from: fromViewController)!
-            detailZoomable = imageZoomable(from: toViewController)!
+            gridZoomable = fromViewController.findViewController(ofType: ImageZoomable.self)!
+            detailZoomable = toViewController.findViewController(ofType: ImageZoomable.self)!
         case .dismissing:
-            gridZoomable = imageZoomable(from: toViewController)!
-            detailZoomable = imageZoomable(from: fromViewController)!
+            gridZoomable = toViewController.findViewController(ofType: ImageZoomable.self)!
+            detailZoomable = fromViewController.findViewController(ofType: ImageZoomable.self)!
         }
 
         // Calculate the frames
@@ -182,12 +173,21 @@ class InteractionController: NSObject {
     fileprivate var transitionContext: UIViewControllerContextTransitioning?
     private var origin: CGPoint?
     private let minimumPanDistance: CGFloat = 50
+    let imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        return imageView
+    }()
 
     var isPanning: Bool {
         return origin != nil
     }
 
     func handlePan(_ recognizer: UIPanGestureRecognizer) {
+        var detailZoomable = transitionContext?.viewController(forKey: .from)?.findViewController(ofType: ImageZoomable.self)
+        var gridZoomable = transitionContext?.viewController(forKey: .to)?.findViewController(ofType: ImageZoomable.self)
+
         switch recognizer.state {
         case .began:
             origin = recognizer.view?.center
@@ -195,16 +195,33 @@ class InteractionController: NSObject {
         case .changed:
             if let origin = origin {
                 let translation = recognizer.translation(in: recognizer.view)
-                recognizer.view?.center = CGPoint(x: origin.x + translation.x, y: origin.y + translation.y)
+                imageView.center = CGPoint(x: origin.x + translation.x, y: origin.y + translation.y)
+
+                if let transitionContext = transitionContext, let fromView = transitionContext.view(forKey: .from), let toView = transitionContext.view(forKey: .to) {
+                    if !imageView.isDescendant(of: transitionContext.containerView) {
+                        if let frame = detailZoomable?.targetFrame(in: transitionContext.containerView, shouldCenterIfOffScreen: false) {
+                            imageView.frame = frame
+                        }
+                        imageView.image = detailZoomable?.targetImage
+                        transitionContext.containerView.addSubview(imageView)
+                    }
+
+
+                    detailZoomable?.isTransitioning = true
+                    gridZoomable?.isTransitioning = true
+
+                    if toView.isDescendant(of: transitionContext.containerView) == false {
+                        transitionContext.containerView.insertSubview(toView, at: 0)
+                    }
+
+                    let distance = translation.distance(to: .zero)
+                    let alpha = 1.0 - min(1.0, distance / (0.5 * fromView.frame.size.height))
+                    fromView.alpha = alpha
+                }
             }
 
-        case .cancelled:
-            transitionContext?.cancelInteractiveTransition()
-            transitionContext?.completeTransition(false)
-            origin = nil
-
         case .ended:
-            if let origin = origin, let center = recognizer.view?.center, origin.distance(to: center) > minimumPanDistance {
+            if let origin = origin, origin.distance(to: imageView.center) > minimumPanDistance {
                 if let transitionContext = transitionContext {
                     animator?.animateTransition(using: transitionContext)
                 }
@@ -213,11 +230,14 @@ class InteractionController: NSObject {
                 UIView.animate(withDuration: 0.2, animations: { 
                     recognizer.view?.center = self.origin!
                 }, completion: { (_) in
+                    detailZoomable?.isTransitioning = false
+                    gridZoomable?.isTransitioning = false
                     self.transitionContext?.cancelInteractiveTransition()
                     self.transitionContext?.completeTransition(false)
                 })
             }
             origin = nil
+            imageView.removeFromSuperview()
 
         default:
             break;

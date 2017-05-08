@@ -20,6 +20,21 @@ extension UIViewController {
     }
 }
 
+extension UIViewController {
+
+    /// Check if 'self' is a given type, or if 'self' is a container controller, check its child view controller(s).
+    func findViewController<T>(ofType type: T.Type) -> T? {
+        if let controller = self as? T {
+            return controller
+        }
+        if let navController = self as? UINavigationController, let controller = navController.topViewController as? T {
+            return controller
+        }
+        return nil
+
+    }
+}
+
 extension CGPoint {
     func distance(to point2: CGPoint) -> CGFloat {
         let distance = sqrt( pow(x - point2.x, 2) + pow(y - point2.y, 2) )
