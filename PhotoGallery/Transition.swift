@@ -9,6 +9,7 @@
 import UIKit
 
 protocol ImageZoomable {
+    var isTransitioning: Bool { get set }
     var targetImage: UIImage { get }
     func targetFrame(in view: UIView, shouldCenterIfOffScreen: Bool) -> CGRect
 }
@@ -89,10 +90,7 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
                 return
         }
 
-        let duration = transitionDuration(using: transitionContext)
-
-        // Calculate needed frames
-
+        // Grab necessary variables
         func imageZoomable(from vc: UIViewController) -> ImageZoomable? {
             if let controller = vc as? ImageZoomable {
                 return controller
@@ -102,9 +100,8 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
             }
             return nil
         }
-
-        let gridZoomable: ImageZoomable
-        let detailZoomable: ImageZoomable
+        var gridZoomable: ImageZoomable
+        var detailZoomable: ImageZoomable
         switch direction {
         case .presenting:
             gridZoomable = imageZoomable(from: fromViewController)!
@@ -114,62 +111,53 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
             detailZoomable = imageZoomable(from: fromViewController)!
         }
 
+        // Calculate the frames
         let image = detailZoomable.targetImage
         let viewFrame = transitionContext.finalFrame(for: toViewController)
         let gridImageFrame = gridZoomable.targetFrame(in: transitionContext.containerView, shouldCenterIfOffScreen: true)
         let detailImageFrame = detailZoomable.targetFrame(in: transitionContext.containerView, shouldCenterIfOffScreen: false)
-
-
-        // Insert the toView at the bottom. It would be fully covered by blackBackground until the end of the animation.
         toView.frame = viewFrame
-        transitionContext.containerView.insertSubview(toView, at: 0)
 
-        // A white mask that covers the source image, so that it looks like the image is being moved instead of copied.
-        let mask = UIView()
-        mask.backgroundColor = .white
-        mask.frame = gridImageFrame
-        transitionContext.containerView.addSubview(mask)
 
-        // A black background that fades with the zooming animation
-        let blackBackground = UIView()
-        blackBackground.backgroundColor = .black
-        blackBackground.frame = viewFrame
-        transitionContext.containerView.addSubview(blackBackground)
+        // Hides the image views...
+        gridZoomable.isTransitioning = true
+        detailZoomable.isTransitioning = true
 
-        // The image view used in the zooming animation
+        // ...and use a mock image view for animation
         let imageView = UIImageView(image: image)
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         transitionContext.containerView.addSubview(imageView)
 
+        // Set proper states by direction
         let startState, endState: () -> Void
         switch direction {
         case .presenting:
             startState = {
-                blackBackground.alpha = 0.0
+                transitionContext.containerView.insertSubview(toView, belowSubview: imageView)
+                toView.alpha = 0.0
                 imageView.frame = gridImageFrame
             }
             endState = {
-                blackBackground.alpha = 1.0
+                toView.alpha = 1.0
                 imageView.frame = detailImageFrame
             }
-
-
         case .dismissing:
             startState = {
-                fromView.alpha = 0.0
-                blackBackground.alpha = 1.0
+                transitionContext.containerView.insertSubview(toView, at: 0)
+                fromView.alpha = 1.0
                 imageView.frame = detailImageFrame
             }
             endState = {
-                blackBackground.alpha = 0.0
+                fromView.alpha = 0.0
                 imageView.frame = gridImageFrame
             }
         }
 
+        // Kick off the animation!
         startState()
         UIView.animate(
-            withDuration: duration,
+            withDuration: transitionDuration(using: transitionContext),
             delay: 0.0,
             usingSpringWithDamping: dampingRatio,
             initialSpringVelocity: 0.0,
@@ -178,8 +166,8 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
                 endState()
             },
             completion: { (_) in
-                mask.removeFromSuperview()
-                blackBackground.removeFromSuperview()
+                gridZoomable.isTransitioning = false
+                detailZoomable.isTransitioning = false
                 imageView.removeFromSuperview()
                 transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
             }

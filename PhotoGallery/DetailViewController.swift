@@ -17,6 +17,16 @@ class DetailViewController: UIViewController {
     fileprivate let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: [UIPageViewControllerOptionInterPageSpacingKey: 10])
     private let transitionController = TransitionController()
 
+    var isTransitioning = false {
+        didSet {
+            if isTransitioning {
+                pageViewController.view.alpha = 0.0
+            } else {
+                pageViewController.view.alpha = 1.0
+            }
+        }
+    }
+
     // MARK: -
 
     static func controller(with dataSource: DataSource) -> DetailViewController {
