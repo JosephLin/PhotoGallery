@@ -58,10 +58,31 @@ A proof-of-concept prototype that demonstrate the transition between the grid vi
 - Allow swipe-to-dismiss when zoomed
   - This is a minor feature that might improve usability. 
 
+# Inspirations
 
+I'm an amature photographer and I've accumulated quite a large amount of photos over the years. I've been constantly looking for a better photo browsing and managing app, so this is a topic that I care deeply about. My approach for this project is influenced by apps that I'm using or have used extensively in the past: Picasa, iPhoto, Aperture, Photos on mac and on iOS, Lightroom, Google Photos, etc*. I also drew insiprations from other image-centric apps, like tumblr and instagram.
 
+## Case study
+(This only covers the user interaction, but not the functional stuff like syncing, performance, or AI) 
 
+- (iOS) Photos
+  - very natural zooming transition.
+  - bouncing at the end of the zoom is a nice touch.
+  - swipe up for detail with subtle animations going on.
+  - swipe down to dismiss. If the current photo is outside of the frame, the grid re-centers.
+  - Since the swipe-to-dismiss gesture is only on one direction, the dismiss/cancel behavior feels more deterministic. Though it's arguably less discoverable.
+  - swipe left/right to change photo, though the parallex effect feels a bit too much.
+  - Photo stripe at the bottom is my favorite feature- it allows user to change photo without any transition, making photo comparison a lot easier.
+  - problematic scrolling and loading performance on large dataset. :( 
 
-
-
-
+- Google Photos
+  - zooming transition usually works great, but..
+  - occasionally the animation path seems a bit odd, and the grid view might show the blank at a wrong position.
+  - no bouncing at the end of the zoom.
+  - pinch-zoomable grid is a nice feature
+  - swipe up/down to dismiss. If the current photo is outside of the frame, the grid doesn't re-center. 
+  - since the swipe-to-dismiss gesture is bi-directional, it's a bit trickier to cancel.
+  
+- Tumblr
+  - The single-column feed serves a much different purpose than a grid.
+  - Zooming animation, swipe-to-dismiss are both one-dimensional. It integrats nicely with the vertical feed scrolling.
