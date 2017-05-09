@@ -15,6 +15,7 @@
 		7C4ADC4E1EBD5316002C4FFA /* Transition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4ADC4D1EBD5316002C4FFA /* Transition.swift */; };
 		7C4ADC521EBD78E5002C4FFA /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4ADC511EBD78E5002C4FFA /* DetailViewController.swift */; };
 		7C4ADC581EBEB18C002C4FFA /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4ADC571EBEB18C002C4FFA /* Data.swift */; };
+		7C6A4F461EC222E500E0D372 /* ZoomableImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C6A4F451EC222E500E0D372 /* ZoomableImageView.swift */; };
 		7CA9DAFB1EBFEF7400D242DF /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CA9DAFA1EBFEF7400D242DF /* Utilities.swift */; };
 /* End PBXBuildFile section */
 
@@ -29,6 +30,7 @@
 		7C4ADC4D1EBD5316002C4FFA /* Transition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Transition.swift; sourceTree = "<group>"; };
 		7C4ADC511EBD78E5002C4FFA /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		7C4ADC571EBEB18C002C4FFA /* Data.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
+		7C6A4F451EC222E500E0D372 /* ZoomableImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomableImageView.swift; sourceTree = "<group>"; };
 		7CA9DAFA1EBFEF7400D242DF /* Utilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 		7CC0DBA11EBADF0200AA7F19 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -67,6 +69,7 @@
 				7C300F861EBAD63600716547 /* AppDelegate.swift */,
 				7C300F881EBAD63600716547 /* GridViewController.swift */,
 				7C4ADC511EBD78E5002C4FFA /* DetailViewController.swift */,
+				7C6A4F451EC222E500E0D372 /* ZoomableImageView.swift */,
 				7C4ADC4D1EBD5316002C4FFA /* Transition.swift */,
 				7C4ADC571EBEB18C002C4FFA /* Data.swift */,
 				7CA9DAFA1EBFEF7400D242DF /* Utilities.swift */,
@@ -154,6 +157,7 @@
 				7C300F891EBAD63600716547 /* GridViewController.swift in Sources */,
 				7C4ADC581EBEB18C002C4FFA /* Data.swift in Sources */,
 				7C4ADC521EBD78E5002C4FFA /* DetailViewController.swift in Sources */,
+				7C6A4F461EC222E500E0D372 /* ZoomableImageView.swift in Sources */,
 				7C4ADC4E1EBD5316002C4FFA /* Transition.swift in Sources */,
 				7C300F871EBAD63600716547 /* AppDelegate.swift in Sources */,
 			);

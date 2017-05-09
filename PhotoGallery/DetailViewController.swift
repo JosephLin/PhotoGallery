@@ -166,7 +166,7 @@ extension DetailViewController: ImageZoomable {
 // MARK: - ImageViewController
 
 class ImageViewController: UIViewController {
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var imageView: ZoomableImageView!
     var image: UIImage!
     var index: Int!
 
