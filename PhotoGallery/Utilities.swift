@@ -41,3 +41,19 @@ extension CGPoint {
         return distance
     }
 }
+
+extension CGRect {
+    func aspectFit(size: CGSize) -> CGRect {
+        var finalWidth = self.size.width
+        var finalHeight = finalWidth * (size.height / size.width)
+
+        if finalHeight > self.size.height {
+            finalHeight = self.size.height
+            finalWidth = finalHeight * (size.width / size.height)
+        }
+
+        let finalFrame = self.insetBy(dx: 0.5 * (self.size.width - finalWidth), dy: 0.5 * (self.size.height - finalHeight))
+        
+        return finalFrame
+    }
+}

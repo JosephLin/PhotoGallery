@@ -10,7 +10,10 @@ import UIKit
 
 class ZoomableImageView: UIScrollView {
 
-    fileprivate let imageView: UIImageView = UIImageView()
+    fileprivate let imageView = UIImageView()
+
+    /// Expose the recognizer so that dependency can be created if needed.
+    let doubleTapRecognizer = UITapGestureRecognizer()
 
     var image: UIImage? {
         didSet {
@@ -45,9 +48,9 @@ class ZoomableImageView: UIScrollView {
         delegate = self
         bouncesZoom = true
 
-        let recognizer = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTap))
-        recognizer.numberOfTapsRequired = 2
-        addGestureRecognizer(recognizer)
+        doubleTapRecognizer.addTarget(self, action: #selector(handleDoubleTap))
+        doubleTapRecognizer.numberOfTapsRequired = 2
+        addGestureRecognizer(doubleTapRecognizer)
     }
 
     convenience override init(frame: CGRect) {

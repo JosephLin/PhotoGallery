@@ -57,6 +57,7 @@ class DetailViewController: UIViewController {
         pageViewController.view.addGestureRecognizer(panRecognizer)
 
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        tapRecognizer.delegate = self
         view.addGestureRecognizer(tapRecognizer)
 
         if let dataSource = dataSource, let image = dataSource.image(at: dataSource.currentIndex) {
@@ -137,6 +138,15 @@ extension DetailViewController: UIPageViewControllerDelegate {
     }
 }
 
+extension DetailViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOf otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if let controller = pageViewController.viewControllers?.first as? ImageViewController, otherGestureRecognizer == controller.imageView.doubleTapRecognizer {
+            return true
+        }
+        return false
+    }
+}
+
 // MARK: - ImageZoomable
 
 extension DetailViewController: ImageZoomable {
@@ -145,21 +155,7 @@ extension DetailViewController: ImageZoomable {
     }
 
     func prepareTargetFrame(in view: UIView) -> CGRect {
-        func aspectFitFrame(for size: CGSize, in frame: CGRect) -> CGRect {
-            var finalWidth = frame.size.width
-            var finalHeight = finalWidth * (size.height / size.width)
-
-            if finalHeight > frame.size.height {
-                finalHeight = frame.size.height
-                finalWidth = finalHeight * (size.width / size.height)
-            }
-
-            let finalFrame = frame.insetBy(dx: 0.5 * (frame.size.width - finalWidth), dy: 0.5 * (frame.size.height - finalHeight))
-
-            return finalFrame
-        }
-
-        return aspectFitFrame(for: targetImage.size, in: pageViewController.view.frame)
+        return pageViewController.view.frame.aspectFit(size: targetImage.size)
     }
 }
 
