@@ -44,6 +44,5 @@ A proof-of-concept prototype that demonstrate the transition between the grid vi
 
 
 # TODO
-- background fade when swipe-to-dismiss
 - Zoom
 - debug menu
