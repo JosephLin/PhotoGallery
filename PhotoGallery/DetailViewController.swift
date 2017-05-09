@@ -200,6 +200,14 @@ class ImageViewController: UIViewController {
         imageView.image = image
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+
+        // Reset any previous zooming
+        imageView.zoomScale = 1.0
+    }
+
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
