@@ -51,5 +51,17 @@ A proof-of-concept prototype that demonstrate the transition between the grid vi
 
 
 # TODO
-- Rotation
-- allow swipe-to-dismiss when zoomed
+- Support device rotation
+  - The current animation frame calculation code is buggy when the grid view's size changes dynamically. Support for landscape mode is disabled for now.
+- Support different screen sizes
+  - Current two-column grid view functions fine on an iPad, but the cells look ridiculously large. We'll need an adaptive design in later versions.
+- Allow swipe-to-dismiss when zoomed
+  - This is a minor feature that might improve usability. 
+
+
+
+
+
+
+
+
