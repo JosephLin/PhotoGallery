@@ -9,9 +9,18 @@
 import UIKit
 
 protocol ImageZoomable {
+
+    /// Notify the caller to show/hide necessary view(s) for animation
     var isTransitioning: Bool { get set }
+
+    /// The target image for the zooming animation
     var targetImage: UIImage { get }
-    func targetFrame(in view: UIView, shouldCenterIfOffScreen: Bool) -> CGRect
+
+    /// Notify the caller to prepare the frame for animation.
+    ///
+    /// - Parameter view: The return value will be converted to this view's coordinate.
+    /// - Returns: The frame that the target image should animate to/from.
+    func prepareTargetFrame(in view: UIView) -> CGRect
 }
 
 // MARK: -  Transition Controller
@@ -58,7 +67,7 @@ extension TransitionController: UIViewControllerTransitioningDelegate {
 
 class AnimationController: NSObject {
 
-    // MARK: Constants
+    // MARK: Constants: Animation Characristics
 
     let transitionDuration: TimeInterval = 0.5
     let dampingRatio: CGFloat = 0.8
@@ -112,8 +121,8 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
         // Calculate the frames
         let image = detailZoomable.targetImage
         let viewFrame = transitionContext.finalFrame(for: toViewController)
-        let gridImageFrame = gridZoomable.targetFrame(in: transitionContext.containerView, shouldCenterIfOffScreen: true)
-        let detailImageFrame = detailZoomable.targetFrame(in: transitionContext.containerView, shouldCenterIfOffScreen: false)
+        let gridImageFrame = gridZoomable.prepareTargetFrame(in: transitionContext.containerView)
+        let detailImageFrame = detailZoomable.prepareTargetFrame(in: transitionContext.containerView)
         toView.frame = viewFrame
 
 
@@ -140,6 +149,7 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
             }
         case .dismissing:
             startState = {
+                // If dummyImageView is already in the view, it means the animator is taking over an interactive transition.
                 if !self.dummyImageView.isDescendant(of: transitionContext.containerView) {
                     transitionContext.containerView.addSubview(self.dummyImageView)
                     fromView.alpha = 1.0
@@ -177,15 +187,24 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
 // MARK: - Interaction Controller
 
 class InteractionController: NSObject {
-    weak var animator: AnimationController?
-    fileprivate var transitionContext: UIViewControllerContextTransitioning?
-    private var origin: CGPoint?
-    private let minimumPanDistance: CGFloat = 50
 
-    var isPanning: Bool {
+    // MARK: Constants: Gesture Characristics
+
+    fileprivate let minimumPanDistance: CGFloat = 50
+    fileprivate let maximumPanDistance: CGFloat = 150
+
+    // MARK: Properties
+
+    fileprivate weak var animator: AnimationController?
+    fileprivate var transitionContext: UIViewControllerContextTransitioning?
+
+    fileprivate var origin: CGPoint?
+    fileprivate var isPanning: Bool {
         return origin != nil
     }
+}
 
+extension InteractionController {
     func handlePan(_ recognizer: UIPanGestureRecognizer) {
         var detailZoomable = transitionContext?.viewController(forKey: .from)?.findViewController(ofType: ImageZoomable.self)
         var gridZoomable = transitionContext?.viewController(forKey: .to)?.findViewController(ofType: ImageZoomable.self)
@@ -200,13 +219,13 @@ class InteractionController: NSObject {
 
                 if let transitionContext = transitionContext, let fromView = transitionContext.view(forKey: .from), let toView = transitionContext.view(forKey: .to) {
                     if !imageView.isDescendant(of: transitionContext.containerView) {
-                        if let frame = detailZoomable?.targetFrame(in: transitionContext.containerView, shouldCenterIfOffScreen: false) {
+                        if let frame = detailZoomable?.prepareTargetFrame(in: transitionContext.containerView) {
                             imageView.frame = frame
                         }
                         imageView.image = detailZoomable?.targetImage
                         transitionContext.containerView.addSubview(imageView)
                     }
-                    _ = gridZoomable?.targetFrame(in: transitionContext.containerView, shouldCenterIfOffScreen: true)
+                    _ = gridZoomable?.prepareTargetFrame(in: transitionContext.containerView)
 
 
                     detailZoomable?.isTransitioning = true
@@ -217,7 +236,7 @@ class InteractionController: NSObject {
                     }
 
                     let distance = translation.distance(to: .zero)
-                    let alpha = 1.0 - min(1.0, distance / (0.5 * fromView.frame.size.height))
+                    let alpha = 1.0 - min(1.0, distance / maximumPanDistance)
                     fromView.alpha = alpha
                 }
 

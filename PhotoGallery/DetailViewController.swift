@@ -125,7 +125,7 @@ extension DetailViewController: ImageZoomable {
         return dataSource.image(at: dataSource.currentIndex) ?? UIImage()
     }
 
-    func targetFrame(in view: UIView, shouldCenterIfOffScreen: Bool) -> CGRect {
+    func prepareTargetFrame(in view: UIView) -> CGRect {
         func aspectFitFrame(for size: CGSize, in frame: CGRect) -> CGRect {
             var finalWidth = frame.size.width
             var finalHeight = finalWidth * (size.height / size.width)
