@@ -11,10 +11,18 @@ import UIKit
 // MARK: - DetailViewController
 
 class DetailViewController: UIViewController {
+
+    // MARK: - Constants
+
+    static let interPageSpacing: CGFloat = 10.0
+    let toolbarAnimationDuration: TimeInterval = 0.2
+
+    // MARK: - Properties
+
     @IBOutlet weak var navigationBar: UINavigationBar!
     @IBOutlet weak var toolbar: UIToolbar!
     fileprivate var dataSource: DataSource!
-    fileprivate let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: [UIPageViewControllerOptionInterPageSpacingKey: 10])
+    fileprivate let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: [UIPageViewControllerOptionInterPageSpacingKey: interPageSpacing])
     private let transitionController = TransitionController()
 
     var isTransitioning = false {
@@ -48,6 +56,9 @@ class DetailViewController: UIViewController {
         let panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
         pageViewController.view.addGestureRecognizer(panRecognizer)
 
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        view.addGestureRecognizer(tapRecognizer)
+
         if let dataSource = dataSource, let image = dataSource.image(at: dataSource.currentIndex) {
             let controller = ImageViewController.controller(with: image, index: dataSource.currentIndex)
             pageViewController.setViewControllers([controller], direction: .forward, animated: false, completion: nil)
@@ -77,6 +88,14 @@ class DetailViewController: UIViewController {
             dismiss(animated: true, completion: nil)
         default:
             break
+        }
+    }
+
+    func handleTap(_ recognizer: UITapGestureRecognizer) {
+        let newAlpha: CGFloat = (navigationBar.alpha == 0.0) ? 1.0 : 0.0
+        UIView.animate(withDuration: toolbarAnimationDuration) {
+            self.navigationBar.alpha = newAlpha
+            self.toolbar.alpha = newAlpha
         }
     }
 
