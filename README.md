@@ -29,6 +29,7 @@ A proof-of-concept prototype that demonstrate the transition between the grid vi
   - When user tries to pinch beyond the allowed zoom scales, the zoom should bounce to provide a nice physical feedback.
   - User can double-tap the image to toggle between minimum and maximum scale.
     - This gesture to take precedence of the single-tap gesture mentioned above, so that the toolbars wouldn't toggle on a double-tap.
+  - Zooming should be reset when user scrolls to a different image.
 
 
 ## Transition
@@ -42,7 +43,7 @@ A proof-of-concept prototype that demonstrate the transition between the grid vi
 - We can adress (ii) by providing a 'swipe-to-dismiss' gesture:
   - When user pans the full-size image, the image should move with their figure; the background to crossfade as they move, to provide a cue that the view is about to be dismissed. When the user lets go their figure, the image should shrink back to the thumbnail as described above.
   - Since we preserved the swiping left/right gesture to image browsing, the dismiss gesture will only be triggered on swiping up or down.
-  - Since we allow user to zoom an image, the swipe-to-dismiss gesture should only trigger when the top (or bottom) edge of the image is showing. (TODO)
+  - Swipe-to-dismiss is only allowed when the image is not zoomed.
   - If the user let go the figure without moving too much, the view should not be dismissed.
 - We can make the animation looks physically natural by using a curve with ease-inout and slight overshoot and bouncing.
   - provide debug panel to control the animation variables (TODO)
@@ -50,5 +51,7 @@ A proof-of-concept prototype that demonstrate the transition between the grid vi
 
 
 # TODO
-- Zoom
 - debug menu
+- Rotation
+- allow swipe-to-dismiss when zoomed
+- Fix top content inset when zoomed

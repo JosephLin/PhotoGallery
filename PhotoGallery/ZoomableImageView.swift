@@ -18,14 +18,7 @@ class ZoomableImageView: UIScrollView {
     var image: UIImage? {
         didSet {
             imageView.image = image
-
-            let imageSize = image?.size ?? .zero
-            let scaleWidth = imageSize.width / bounds.size.width
-            let scaleHeight = imageSize.height / bounds.size.height
-
-            minimumZoomScale = 1.0
-            maximumZoomScale = max(scaleWidth, scaleHeight)
-            zoomScale = minimumZoomScale
+            updateFrameAndZoomScale()
         }
     }
 
@@ -66,8 +59,26 @@ class ZoomableImageView: UIScrollView {
     override func layoutSubviews() {
         super.layoutSubviews()
         if zoomScale == 1.0 {
-            imageView.frame = bounds
+            updateFrameAndZoomScale()
         }
+    }
+
+    func updateFrameAndZoomScale() {
+        let imageSize = image?.size ?? .zero
+        let scaleWidth = imageSize.width / bounds.size.width
+        let scaleHeight = imageSize.height / bounds.size.height
+
+        minimumZoomScale = 1.0
+        maximumZoomScale = max(scaleWidth, scaleHeight)
+        zoomScale = minimumZoomScale
+
+        let aspectFitFrame = bounds.aspectFit(size: imageSize)
+        imageView.frame = aspectFitFrame
+
+//        imageView.frame = CGRect(origin: .zero, size: aspectFitFrame.size)
+//        let horizontalInset = max(0, 0.5 * (bounds.size.width - aspectFitFrame.size.width))
+//        let verticalInset = max(0, 0.5 * (bounds.size.height - aspectFitFrame.size.height))
+//        contentInset = UIEdgeInsets(top: verticalInset, left: horizontalInset, bottom: verticalInset, right: horizontalInset)
     }
 
     func handleDoubleTap(_ recognizer: UITapGestureRecognizer) {
