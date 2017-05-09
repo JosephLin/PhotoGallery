@@ -57,3 +57,34 @@ extension CGRect {
         return finalFrame
     }
 }
+
+
+extension UserDefaults {
+    enum Attribute: String {
+        case transitionDuration
+        case dampingRatio
+        case minimumPanDistance
+        case maximumPanDistance
+
+        var defaultValue: Double {
+            switch self {
+            case .transitionDuration:
+                return 0.5
+            case .dampingRatio:
+                return 0.8
+            case .minimumPanDistance:
+                return 50
+            case .maximumPanDistance:
+                return 150
+            }
+        }
+    }
+
+    func double(forAttribute attribute: Attribute) -> Double {
+        return object(forKey: attribute.rawValue) as? Double ?? attribute.defaultValue
+    }
+
+    func set(_ value: Double, forAttribute attribute: Attribute) {
+        set(value, forKey: attribute.rawValue)
+    }
+}

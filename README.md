@@ -46,11 +46,10 @@ A proof-of-concept prototype that demonstrate the transition between the grid vi
   - Swipe-to-dismiss is only allowed when the image is not zoomed beyond the size of the screen.
   - If the user let go the figure without moving too much, the view should not be dismissed.
 - We can make the animation looks physically natural by using a curve with ease-inout and slight overshoot and bouncing.
-  - provide debug panel to control the animation variables (TODO)
+  - A debug panel is provided in the system settings to control the animation variables.
 - We can experiment with haptic feedback and/or sound effect to see if they enhence the experience. 3D touch & peek is another interesting option. (TODO)
 
 
 # TODO
-- debug menu
 - Rotation
 - allow swipe-to-dismiss when zoomed

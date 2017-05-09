@@ -68,8 +68,8 @@ private class Animator: NSObject {
 
     // MARK: Animation Characristics
 
-    let transitionDuration: TimeInterval = 0.5
-    let dampingRatio: CGFloat = 0.8
+    let transitionDuration: TimeInterval = UserDefaults.standard.double(forAttribute: .transitionDuration)
+    let dampingRatio = CGFloat(UserDefaults.standard.double(forAttribute: .dampingRatio))
 
     // MARK: Properties
 
@@ -188,8 +188,8 @@ private class InteractionController: NSObject {
 
     // MARK: Gesture Characristics
 
-    fileprivate let minimumPanDistance: CGFloat = 50
-    fileprivate let maximumPanDistance: CGFloat = 150
+    fileprivate let minimumPanDistance = CGFloat(UserDefaults.standard.double(forAttribute: .minimumPanDistance))
+    fileprivate let maximumPanDistance = CGFloat(UserDefaults.standard.double(forAttribute: .maximumPanDistance))
 
     // MARK: Properties
 
