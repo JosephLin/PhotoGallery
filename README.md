@@ -19,10 +19,16 @@ A proof-of-concept prototype that demonstrate the transition between the grid vi
 
 ## Detail View
 - The spec doesn't show an example of a portrait photo. I assume it'll aspect-fit the entire screen (extend behind top and bottom bars for very tall images).
+- User can single-tap the view to hide/reveal the top and bottom toolbars.
 - One of the most common and desirable feature is to allow swiping left or right to the previous or next photo.
   - When dismissing, it would need to transition to the thumbnail corresponding to the image currently on screen.
   - If the corresponding thumbnail is offscreen, the grid to scroll to center that thumbnail.
-- Another common and desirable feature is image zooming (TODO)
+- Another common and desirable feature is image zooming:
+  - At minimum zoom scale, the image would aspect-fit the screen. This is also the default scale when a detail view is being presented.
+  - At maximum zoom scale, the image would at its 100% size.
+  - When user tries to pinch beyond the allowed zoom scales, the zoom should bounce to provide a nice physical feedback.
+  - User can double-tap the image to toggle between minimum and maximum scale.
+    - This gesture to take precedence of the single-tap gesture mentioned above, so that the toolbars wouldn't toggle on a double-tap.
 
 
 ## Transition

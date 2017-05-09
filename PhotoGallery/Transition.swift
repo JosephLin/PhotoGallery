@@ -11,7 +11,7 @@ import UIKit
 protocol ImageZoomable {
 
     /// Notify the caller to show/hide necessary view(s) for animation
-    var isTransitioning: Bool { get set }
+    func setTransitioning(_ isTransitioning: Bool)
 
     /// The target image for the zooming animation
     var targetImage: UIImage { get }
@@ -125,8 +125,8 @@ extension Animator: UIViewControllerAnimatedTransitioning {
         toView.frame = viewFrame
 
         // Hides the image views...
-        gridZoomable.isTransitioning = true
-        detailZoomable.isTransitioning = true
+        gridZoomable.setTransitioning(true)
+        detailZoomable.setTransitioning(true)
 
         // ...and use a dummy image view for animation
         dummyView.image = image
@@ -173,8 +173,8 @@ extension Animator: UIViewControllerAnimatedTransitioning {
                 endState()
             },
             completion: { (_) in
-                gridZoomable.isTransitioning = false
-                detailZoomable.isTransitioning = false
+                gridZoomable.setTransitioning(false)
+                detailZoomable.setTransitioning(false)
                 self.dummyView.removeFromSuperview()
                 transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
             }
@@ -218,29 +218,25 @@ extension InteractionController {
                 let transitionContext = transitionContext,
                 let fromView = transitionContext.view(forKey: .from),
                 let toView = transitionContext.view(forKey: .to),
-                var gridZoomable = gridZoomable,
-                var detailZoomable = detailZoomable
+                let gridZoomable = gridZoomable,
+                let detailZoomable = detailZoomable
                 else {
                     return
             }
 
-            // Add toView, if not already in the stack
+            // If 'toView' is not in the view stack, we need to perform some setup.  
             if toView.isDescendant(of: transitionContext.containerView) == false {
                 transitionContext.containerView.insertSubview(toView, at: 0)
-            }
-
-            // Add toView, if not already in the stack
-            if !dummyView.isDescendant(of: transitionContext.containerView) {
                 dummyView.frame = detailZoomable.prepareTargetFrame(in: transitionContext.containerView)
                 dummyView.image = detailZoomable.targetImage
                 transitionContext.containerView.addSubview(dummyView)
 
                 // this is only called for its side-effect :/
                 _ = gridZoomable.prepareTargetFrame(in: transitionContext.containerView)
-            }
 
-            detailZoomable.isTransitioning = true
-            gridZoomable.isTransitioning = true
+                detailZoomable.setTransitioning(true)
+                gridZoomable.setTransitioning(true)
+            }
 
             let translation = recognizer.translation(in: recognizer.view)
             let distance = translation.distance(to: .zero)
@@ -254,8 +250,9 @@ extension InteractionController {
                 let dummyView = animator?.dummyView,
                 let transitionContext = transitionContext,
                 let fromView = transitionContext.view(forKey: .from),
-                var gridZoomable = gridZoomable,
-                var detailZoomable = detailZoomable
+                let toView = transitionContext.view(forKey: .to),
+                let gridZoomable = gridZoomable,
+                let detailZoomable = detailZoomable
                 else {
                     return
             }
@@ -271,11 +268,12 @@ extension InteractionController {
                         self.animator?.dummyView.center = origin
                     },
                     completion: { (_) in
-                        detailZoomable.isTransitioning = false
-                        gridZoomable.isTransitioning = false
+                        detailZoomable.setTransitioning(false)
+                        gridZoomable.setTransitioning(false)
                         transitionContext.cancelInteractiveTransition()
                         transitionContext.completeTransition(false)
                         self.animator?.dummyView.removeFromSuperview()
+                        toView.removeFromSuperview()
                     }
                 )
             }

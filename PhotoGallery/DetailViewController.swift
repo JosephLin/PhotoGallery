@@ -15,7 +15,7 @@ class DetailViewController: UIViewController {
     // MARK: - Constants
 
     static let interPageSpacing: CGFloat = 10.0
-    let toolbarAnimationDuration: TimeInterval = 0.2
+    let toolbarAnimationDuration: TimeInterval = 0.1
 
     // MARK: - Properties
 
@@ -25,15 +25,10 @@ class DetailViewController: UIViewController {
     fileprivate let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: [UIPageViewControllerOptionInterPageSpacingKey: interPageSpacing])
     private let transitionController = TransitionController()
 
-    var isTransitioning = false {
-        didSet {
-            if isTransitioning {
-                pageViewController.view.alpha = 0.0
-            } else {
-                pageViewController.view.alpha = 1.0
-            }
-        }
+    var isToolbarsHidden: Bool {
+        return navigationBar.alpha == 0.0
     }
+    var wasToolbarsHiddenBeforeTransitioning = false
 
     // MARK: -
 
@@ -93,10 +88,19 @@ class DetailViewController: UIViewController {
     }
 
     func handleTap(_ recognizer: UITapGestureRecognizer) {
-        let newAlpha: CGFloat = (navigationBar.alpha == 0.0) ? 1.0 : 0.0
-        UIView.animate(withDuration: toolbarAnimationDuration) {
+        setToolbarsHidden(!isToolbarsHidden, animated: true)
+    }
+
+    func setToolbarsHidden(_ hidden: Bool, animated: Bool) {
+        let endState = {
+            let newAlpha: CGFloat = (hidden) ? 0.0 : 1.0
             self.navigationBar.alpha = newAlpha
             self.toolbar.alpha = newAlpha
+        }
+        if animated {
+            UIView.animate(withDuration: toolbarAnimationDuration, animations: endState)
+        } else {
+            endState()
         }
     }
 
@@ -130,13 +134,14 @@ extension DetailViewController: UIPageViewControllerDataSource {
 // MARK: - UIPageViewControllerDelegate
 
 extension DetailViewController: UIPageViewControllerDelegate {
-
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         if let controller = pageViewController.viewControllers?.first as? ImageViewController {
             dataSource.currentIndex = controller.index
         }
     }
 }
+
+// MARK: - UIGestureRecognizerDelegate
 
 extension DetailViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOf otherGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -150,6 +155,18 @@ extension DetailViewController: UIGestureRecognizerDelegate {
 // MARK: - ImageZoomable
 
 extension DetailViewController: ImageZoomable {
+    func setTransitioning(_ isTransitioning: Bool) {
+        if isTransitioning {
+            pageViewController.view.alpha = 0.0
+            wasToolbarsHiddenBeforeTransitioning = isToolbarsHidden
+            setToolbarsHidden(true, animated: true)
+
+        } else {
+            pageViewController.view.alpha = 1.0
+            setToolbarsHidden(wasToolbarsHiddenBeforeTransitioning, animated: true)
+        }
+    }
+
     var targetImage: UIImage {
         return dataSource.image(at: dataSource.currentIndex) ?? UIImage()
     }

@@ -19,17 +19,6 @@ class GridViewController: UIViewController {
     private let itemSpacing: CGFloat = 10
     private let aspectRatio: CGFloat = 4.0 / 3.0
 
-    var isTransitioning = false {
-        didSet {
-            let cell = collectionView.cellForItem(at: IndexPath(item: dataSource.currentIndex, section: 0))
-            if isTransitioning {
-                cell?.alpha = 0.0
-            } else {
-                cell?.alpha = 1.0
-            }
-        }
-    }
-
     // MARK: Layout
 
     override func viewDidLayoutSubviews() {
@@ -77,6 +66,14 @@ extension GridViewController: UICollectionViewDataSource, UICollectionViewDelega
 // MARK: - ImageZoomable
 
 extension GridViewController: ImageZoomable {
+    func setTransitioning(_ isTransitioning: Bool) {
+        let cell = collectionView.cellForItem(at: IndexPath(item: dataSource.currentIndex, section: 0))
+        if isTransitioning {
+            cell?.alpha = 0.0
+        } else {
+            cell?.alpha = 1.0
+        }
+    }
 
     var targetImage: UIImage {
         return dataSource.image(at: dataSource.currentIndex) ?? UIImage()
