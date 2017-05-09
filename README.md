@@ -60,7 +60,7 @@ A proof-of-concept prototype that demonstrate the transition between the grid vi
 
 # Inspirations
 
-I'm an amature photographer and I've accumulated quite a large amount of photos over the years. I've been constantly looking for a better photo browsing and managing app, so this is a topic that I care deeply about. My approach for this project is influenced by apps that I'm using or have used extensively in the past: Picasa, iPhoto, Aperture, Photos on mac and on iOS, Lightroom, Google Photos, etc*. I also drew insiprations from other image-centric apps, like tumblr and instagram.
+I'm an amature photographer and I've accumulated quite a large amount of photos over the years. I've been constantly looking for a better photo browsing and managing app, so this is a topic that I care deeply about. My approach for this project is influenced by apps that I'm using or have used extensively in the past: Picasa, iPhoto, Aperture, Photos on mac and on iOS, Lightroom, Google Photos, etc. I also drew insiprations from other image-centric apps, like tumblr and instagram.
 
 ## Case study
 (This only covers the user interaction, but not the functional stuff like syncing, performance, or AI) 
@@ -86,3 +86,7 @@ I'm an amature photographer and I've accumulated quite a large amount of photos 
 - Tumblr
   - The single-column feed serves a much different purpose than a grid.
   - Zooming animation, swipe-to-dismiss are both one-dimensional. It integrats nicely with the vertical feed scrolling.
+
+- [NYTPhotoViewer](https://github.com/NYTimes/NYTPhotoViewer)
+  - This open-source library from New York Times provides a nice out-of-box photo browser. I chose to write my own implementation instead of including it as a framework ~because it would be too easy~ because its approach doesn't allow the presenting view (i.e. the grid view) to be visible during the transition, and the gesture controls are not exactly to my liking. It did provide a solid starting point for my own transition controller implemetation.
+  
