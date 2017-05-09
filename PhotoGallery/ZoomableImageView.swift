@@ -18,7 +18,7 @@ class ZoomableImageView: UIScrollView {
     var image: UIImage? {
         didSet {
             imageView.image = image
-            updateFrameAndZoomScale()
+            updateZoomScaleAndFrame()
         }
     }
 
@@ -59,11 +59,11 @@ class ZoomableImageView: UIScrollView {
     override func layoutSubviews() {
         super.layoutSubviews()
         if zoomScale == 1.0 {
-            updateFrameAndZoomScale()
+            updateZoomScaleAndFrame()
         }
     }
 
-    func updateFrameAndZoomScale() {
+    private func updateZoomScaleAndFrame() {
         let imageSize = image?.size ?? .zero
         let scaleWidth = imageSize.width / bounds.size.width
         let scaleHeight = imageSize.height / bounds.size.height
@@ -72,13 +72,16 @@ class ZoomableImageView: UIScrollView {
         maximumZoomScale = max(scaleWidth, scaleHeight)
         zoomScale = minimumZoomScale
 
-        let aspectFitFrame = bounds.aspectFit(size: imageSize)
-        imageView.frame = aspectFitFrame
+        // Put imageView's origin at .zero and use contentInset to center it.
+        // (Use origin to center the image would leave undesirable margins when zoomed)
+        imageView.frame = CGRect(origin: .zero, size: bounds.aspectFit(size: imageSize).size)
+        updateContentInset()
+    }
 
-//        imageView.frame = CGRect(origin: .zero, size: aspectFitFrame.size)
-//        let horizontalInset = max(0, 0.5 * (bounds.size.width - aspectFitFrame.size.width))
-//        let verticalInset = max(0, 0.5 * (bounds.size.height - aspectFitFrame.size.height))
-//        contentInset = UIEdgeInsets(top: verticalInset, left: horizontalInset, bottom: verticalInset, right: horizontalInset)
+    fileprivate func updateContentInset() {
+        let horizontalInset = max(0, 0.5 * (bounds.size.width - imageView.frame.size.width))
+        let verticalInset = max(0, 0.5 * (bounds.size.height - imageView.frame.size.height))
+        contentInset = UIEdgeInsets(top: verticalInset, left: horizontalInset, bottom: verticalInset, right: horizontalInset)
     }
 
     func handleDoubleTap(_ recognizer: UITapGestureRecognizer) {
@@ -95,5 +98,9 @@ class ZoomableImageView: UIScrollView {
 extension ZoomableImageView: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return imageView
+    }
+
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
+        updateContentInset()
     }
 }

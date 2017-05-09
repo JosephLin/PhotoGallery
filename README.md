@@ -54,4 +54,3 @@ A proof-of-concept prototype that demonstrate the transition between the grid vi
 - debug menu
 - Rotation
 - allow swipe-to-dismiss when zoomed
-- Fix top content inset when zoomed
