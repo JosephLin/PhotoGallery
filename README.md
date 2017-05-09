@@ -41,7 +41,7 @@ A proof-of-concept prototype that demonstrate the transition between the grid vi
   - When dismissing, the full-size image should shrink into its corresponding thumbnail's position. The solid black background to crossfade away. Remember that user might have already swiped to a different image.
   - This effect can be achieved by providing a implemetation of `UIViewControllerAnimatedTransitioning` and `UIViewControllerTransitioningDelegate`
 - We can adress (ii) by providing a 'swipe-to-dismiss' gesture:
-  - When user pans the full-size image, the image should move with their figure; the background to crossfade as they move, to provide a cue that the view is about to be dismissed. When the user lets go their figure, the image should shrink back to the thumbnail as described above.
+  - When user pans the full-size image, the image should move with their finger; the background to crossfade as they move, to provide a cue that the view is about to be dismissed. When the user lets go their figure, the image should shrink back to the thumbnail as described above.
   - Since we preserved the swiping left/right gesture to image browsing, the dismiss gesture will only be triggered on swiping up or down.
   - Swipe-to-dismiss is only allowed when the image is not zoomed beyond the size of the screen.
   - If the user let go the figure without moving too much, the view should not be dismissed.
