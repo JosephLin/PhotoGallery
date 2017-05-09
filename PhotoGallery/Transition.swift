@@ -123,13 +123,13 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
 
         // ...and use a dummy image view for animation
         dummyImageView.image = image
-        transitionContext.containerView.addSubview(dummyImageView)
 
         // Set proper states by direction
         let startState, endState: () -> Void
         switch direction {
         case .presenting:
             startState = {
+                transitionContext.containerView.addSubview(self.dummyImageView)
                 transitionContext.containerView.insertSubview(toView, belowSubview: self.dummyImageView)
                 toView.alpha = 0.0
                 self.dummyImageView.frame = gridImageFrame
@@ -140,9 +140,12 @@ extension AnimationController: UIViewControllerAnimatedTransitioning {
             }
         case .dismissing:
             startState = {
+                if !self.dummyImageView.isDescendant(of: transitionContext.containerView) {
+                    transitionContext.containerView.addSubview(self.dummyImageView)
+                    fromView.alpha = 1.0
+                    self.dummyImageView.frame = detailImageFrame
+                }
                 transitionContext.containerView.insertSubview(toView, at: 0)
-//                fromView.alpha = 1.0
-//                self.dummyImageView.frame = detailImageFrame
             }
             endState = {
                 fromView.alpha = 0.0
@@ -203,6 +206,7 @@ class InteractionController: NSObject {
                         imageView.image = detailZoomable?.targetImage
                         transitionContext.containerView.addSubview(imageView)
                     }
+                    _ = gridZoomable?.targetFrame(in: transitionContext.containerView, shouldCenterIfOffScreen: true)
 
 
                     detailZoomable?.isTransitioning = true
@@ -229,6 +233,9 @@ class InteractionController: NSObject {
             } else {
                 UIView.animate(withDuration: 0.2, animations: { 
                     self.animator?.dummyImageView.center = self.origin!
+                    let fromView = self.transitionContext?.view(forKey: .from)
+                    fromView!.alpha = 1.0
+
                 }, completion: { (_) in
                     detailZoomable?.isTransitioning = false
                     gridZoomable?.isTransitioning = false
