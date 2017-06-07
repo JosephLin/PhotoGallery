@@ -18,6 +18,8 @@ class GridViewController: UIViewController {
     private let sectionInset: CGFloat = 18
     private let itemSpacing: CGFloat = 10
     private let aspectRatio: CGFloat = 4.0 / 3.0
+    /// Keep track of isTransitioning so that the value is available after cell reusing.
+    fileprivate var isTransitioning: Bool = false
 
     // MARK: Layout
 
@@ -53,6 +55,9 @@ extension GridViewController: UICollectionViewDataSource, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell", for: indexPath) as! ImageCell
         cell.imageView.image = dataSource.image(at: indexPath.item)
+        // Hide the cell if it's the target cell for a transition.
+        cell.alpha = (indexPath.item == dataSource.currentIndex && isTransitioning) ? 0.0 : 1.0
+
         return cell
     }
 
@@ -67,11 +72,9 @@ extension GridViewController: UICollectionViewDataSource, UICollectionViewDelega
 
 extension GridViewController: ImageZoomable {
     func setTransitioning(_ isTransitioning: Bool) {
-        let cell = collectionView.cellForItem(at: IndexPath(item: dataSource.currentIndex, section: 0))
-        if isTransitioning {
-            cell?.alpha = 0.0
-        } else {
-            cell?.alpha = 1.0
+        self.isTransitioning = isTransitioning
+        UIView.performWithoutAnimation {
+            collectionView.reloadItems(at: [IndexPath(item: dataSource.currentIndex, section: 0)])
         }
     }
 
